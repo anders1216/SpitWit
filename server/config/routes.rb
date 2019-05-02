@@ -4,5 +4,6 @@ Rails.application.routes.draw do
   resources :players, only: [:index, :create, :update]
   resources :answers, only: [:index, :create, :update]
   resources :votes, only: [:index, :create, :update]
+  mount ActionCable.server => '/cable'
 end
 
