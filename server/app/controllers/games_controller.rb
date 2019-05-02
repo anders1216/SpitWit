@@ -5,7 +5,12 @@ class GamesController < ApplicationController
   end
  
   def create
-    @game = Game.create
+    init = {
+      room_code: Game.generate_room_code, 
+      round: 0
+    }
+
+    @game = Game.create(init)
     render json: @game
   end
 
