@@ -4,6 +4,7 @@ class CreatePlayers < ActiveRecord::Migration[5.2]
       t.string :name
       t.integer :score
       t.boolean :is_host
+      t.integer :game_id
 
       t.timestamps
     end
