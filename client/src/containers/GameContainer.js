@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import NewPlayerForm from '../components/NewPlayerForm'
 import Prompt from '../components/Prompt'
@@ -37,12 +36,7 @@ class GameContainer extends Component {
 
   render(){
     return(
-      <Router>
-        <Route path="/new-player-form" component={NewPlayerForm}
-        <Route path="/prompt" component={() => <Prompt prompt={this.state.prompt}/>}/>
-        <Route path="/answer-form" component={AnswerForm}>
-        <Route path="/game" component={() => <DisplayRound prompt={this.state.prompt} answers={this.state.answers} round={this.state.round}/>}/>
-      </Router>
+
     )
   }
 

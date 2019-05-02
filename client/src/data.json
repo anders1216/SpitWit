@@ -1,0 +1,21 @@
+const export data = {
+  "game": {
+    "id": 1,
+    "roomCode": "ASDF"
+  },
+  "players":
+    [{"name":"Blah", "score":0, "is_host":true},
+    {"name":"Bolbie", "score":0, "is_host":false},
+    {"name":"BaHB", "score":0, "is_host":false}],
+  "answers":
+    [{"text":"Tacos","player":"Blah","prompt":"What are you eating under there?"},
+    {"text":"Underwhere?","player":"Bolbie","prompt":"What are you doing under there?"},
+    {"text":"La Vida Loca","player":"Blah","prompt":"Smoking may cause _____"},
+    {"text":"Underwhere?","player":"BaHB","prompt":"Smoking may cause _____"},
+    {"text":"Vida Loca","player":"Bolbie","prompt":"Whats that growing on your _____!?"},
+    {"text":"Living la Vida Loca","player":"BaHB","prompt":"Whats that growing on your _____!?"}],
+  "prompts":
+    [{"prompt":"What are you eating under there?", "round":1},
+    {"prompt":"Smoking may cause _____", "round":2},
+    {"prompt":"What are you doing under there?", "round":3}]
+}
