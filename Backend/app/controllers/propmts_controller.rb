@@ -1,3 +1,0 @@
-class PropmtsController < ApplicationController
-  
-end
