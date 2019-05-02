@@ -6,6 +6,8 @@ class AnswersController < ApplicationController
  
   def create 
     @answer = Answer.create(answer_params)
+    
+    #ActionCable.server.broadcast('answers', data)
     render json: @answer
   end
 

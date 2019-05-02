@@ -1,3 +1,4 @@
 class Round < ApplicationRecord
-  belongs_to :game, :prompt
+  belongs_to :game
+  belongs_to :prompt
 end

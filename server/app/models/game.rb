@@ -1,5 +1,6 @@
 class Game < ApplicationRecord
-  has_many :players, :prompts
+  has_many :players
+  has_many :prompts
 
   # Generate random 4-letter code 
   def self.generate_room_code 
