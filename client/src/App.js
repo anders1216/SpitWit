@@ -1,19 +1,13 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import GameContainer from './containers/GameContainer'
 
-Class App extends Component {
-  state = {
-    dynamicURL: roomCode
-  }
-  
-  render(){
-  return (
-    <Router>
-      <Route path=`/${dyanmicURL}` component={GameContainer}/>
-    </Router>
-  );
-}
+const App = () => {
+
+    return (
+      <GameContainer/>
+    );
 }
 
 export default App;

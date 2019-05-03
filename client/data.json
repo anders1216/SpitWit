@@ -1,4 +1,4 @@
-const export data = {
+{
   "game": {
     "id": 1,
     "roomCode": "ASDF"
@@ -17,5 +17,5 @@ const export data = {
   "prompts":
     [{"prompt":"What are you eating under there?", "round":1},
     {"prompt":"Smoking may cause _____", "round":2},
-    {"prompt":"What are you doing under there?", "round":3}]
+    {"prompt":"Whats that growing on your _____!?", "round":3}]
 }

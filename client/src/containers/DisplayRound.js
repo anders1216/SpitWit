@@ -19,7 +19,11 @@ class DisplayRound extends Component {
 
   render(){
     return(
-
+      <div>
+        <p>
+          DisplayRound Component
+        </p>
+      </div>
     )
   }
 
