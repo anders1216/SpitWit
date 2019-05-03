@@ -8,4 +8,4 @@
 
 require_relative "prompts_data"
 
-PromptsDB.data.each {|p| Prompt.create(text: p.prompt)}
+PromptsDB.data.each do {|p| Prompt.create(text: p.prompt)}
