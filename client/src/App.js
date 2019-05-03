@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import NewGameForm from '../components/forms/NewGameForm'
-import Lobby from '../components/Lobby'
+import Game from './containers/Game'
 import './App.css'
 
 class App extends Component {
-	API_URL = 'http://localhost:3000/games'
+	API_URL = 'http://localhost:3000/'
 
 	state = {
 		hasValidGame: false
@@ -19,7 +19,7 @@ class App extends Component {
 	}
 
 	handleCreateNewGame = () => {
-		fetch(this.API_URL, {
+		fetch(this.API_URL + 'games', {
 			method: 'POST',
 			mode: 'cors', // no-cors, cors, *same-origin
 			headers: {
@@ -32,7 +32,7 @@ class App extends Component {
 		return (
 			<div>
 				{this.state.hasValidGame ? (
-					<Lobby />
+					<Game apiUrl={this.API_URL} />
 				) : (
 					<NewGameForm
 						handleEnterGame={this.handleEnterGame}
