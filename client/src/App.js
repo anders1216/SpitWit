@@ -1,13 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import GameContainer from './containers/GameContainer'
+import React, { Component } from 'react'
+import NewGameForm from '../components/forms/NewGameForm'
+import Lobby from '../components/Lobby'
+import './App.css'
 
-const App = () => {
+class App extends Component {
+	API_URL = 'http://localhost:3000/games'
 
-    return (
-      <GameContainer/>
-    );
+	state = {
+		hasValidGame: false
+	}
+
+	handleEnterGame = (roomCode) => {
+		fetch(this.API_URL).then((res) => res.json()).then((games) => {
+			if (games.some((game) => game.room_code === roomCode)) {
+				this.setState({ hasValidGame: true })
+			}
+		})
+	}
+
+	handleCreateNewGame = () => {
+		fetch(this.API_URL, {
+			method: 'POST',
+			mode: 'cors', // no-cors, cors, *same-origin
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then((res) => this.setState({ hasValidGame: true }))
+	}
+
+	render() {
+		return (
+			<div>
+				{this.state.hasValidGame ? (
+					<Lobby />
+				) : (
+					<NewGameForm
+						handleEnterGame={this.handleEnterGame}
+						handleCreateNewGame={this.handleCreateNewGame}
+						hasValidGame={this.state.hasValidGame}
+					/>
+				)}
+			</div>
+		)
+	}
 }
 
-export default App;
+export default App
