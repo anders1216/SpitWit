@@ -1,9 +1,7 @@
-import React, {Component} from 'react'
+import React from 'react'
 
-const Player = () => {
-  return(
-    console.log("Player")
-  )
+const Player = (props) => {
+	return <p>player.name</p>
 }
 
 export default Player
