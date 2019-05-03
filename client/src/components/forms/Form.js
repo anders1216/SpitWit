@@ -8,7 +8,7 @@ class Form extends Component {
   render(){
   	return (
   		<div>
-  			<form onSubmit={this.props.handleSubmit}>
+  			<form onSubmit={this.props.handleSubmit(this.state.input)}>
   				<input type='text' onChange={this.handleChange} value={this.state.value} placeholder={this.props.placeholder} />
   				<button type='submit'>Submit </button>
   			</form>

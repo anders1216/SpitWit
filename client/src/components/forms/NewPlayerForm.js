@@ -4,7 +4,7 @@ import Form from './Form'
 const NewPlayerForm = (props) => {
   return(
     <div>
-      <Form handleSubmit={this.props.setCurrentPlayer} placeholder={"enter player name"}/>
+      <Form handleSubmit={this.props.handleSubmit} placeholder={"enter player name"}/>
     </div>
   )
 }

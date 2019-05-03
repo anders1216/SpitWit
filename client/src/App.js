@@ -1,11 +1,6 @@
 import React, { Component } from 'react'
-<<<<<<< HEAD
 import NewGameForm from './components/forms/NewGameForm'
-import Lobby from './components/Lobby'
-=======
-import NewGameForm from '../components/forms/NewGameForm'
 import Game from './containers/Game'
->>>>>>> 76724763a0d13925228e428a6796745214ed18a5
 import './App.css'
 
 class App extends Component {

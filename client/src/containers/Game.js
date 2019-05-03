@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import ActionCable from 'actioncable'
+
 import Lobby from '../components/Lobby'
+import AnswerForm from '../components/forms/AnswerForm'
 import Round from './Round'
 import Player from '../components/Player'
 
@@ -56,11 +58,33 @@ class Game extends Component {
 		return <div>{this.state.players.map((player) => <Player {...player} />)}</div>
 	}
 
+	handleNewAnswer = (answer) => {
+		let player_id = this.state.currentPlayer.id
+		fetch('http://localhost:3000/answers', {
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({text:answer, player_id:player_id})
+		}
+	)
+	}
+
 	render() {
 		const { currPlayer } = this.state
+	  let GameComponent = null
+
+		if (this.state.round_number === 0) {
+			if (this.state.timer > 0) {
+				GameComponent = <AnswerForm handleSubmit={this.handleNewAnswer}/>
+			}
+			GameComponent =  <Lobby handleSubmit={this.setCurrentPlayer} />;
+		}else{
+			GameComponent = <Round />
+		}
+
 		return (
 			<PlayerContext.Provider value={currPlayer}>
-				{this.state.round_number === 0 ? <Lobby setCurrentPlayer={this.setCurrentPlayer} /> : <Round />}
+				{GameComponent}
+
 			</PlayerContext.Provider>
 		)
 	}
