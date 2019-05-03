@@ -10,12 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_02_164729) do
+ActiveRecord::Schema.define(version: 2019_05_02_184414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "answers", force: :cascade do |t|
+    t.integer "player_id"
+    t.integer "answer_id"
     t.string "text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -23,7 +25,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_164729) do
 
   create_table "games", force: :cascade do |t|
     t.string "room_code"
-    t.integer "round"
+    t.integer "round_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -32,18 +34,28 @@ ActiveRecord::Schema.define(version: 2019_05_02_164729) do
     t.string "name"
     t.integer "score"
     t.boolean "is_host"
+    t.integer "game_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "prompts", force: :cascade do |t|
     t.string "question"
-    t.integer "round"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "rounds", force: :cascade do |t|
+    t.integer "round_number"
+    t.integer "game_id"
+    t.integer "prompt_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "votes", force: :cascade do |t|
+    t.integer "player_id"
+    t.integer "answer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

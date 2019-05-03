@@ -6,3 +6,6 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+require_relative "prompts_data"
+
+PromptsDB.data.each do {|p| Prompt.create(text: p.prompt)}
