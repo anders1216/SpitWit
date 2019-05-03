@@ -4,7 +4,7 @@ class Game < ApplicationRecord
 
   # Generate random 4-letter code 
   def self.generate_room_code 
-    ('A'..'Z').to_a.shuffle[0,4].join
+    ('A'..'Z').to_a.sample(4).join
   end
 
 end
