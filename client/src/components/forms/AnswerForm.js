@@ -5,10 +5,7 @@ const AnswerForm = (props) => {
 	return (
 		<div>
 			<Prompt />
-			<form onSubmit={props.handleSubmit}>
-				<input type='text' onChange={props.handleChange} value={props.player.name} placeholder='Who are you?' />
-				<button type='submit'>Submit </button>
-			</form>
+			<Form onSubmit={"handleNewAnswer"} placeholder={"enter answer here"}/>
 		</div>
 	)
 }

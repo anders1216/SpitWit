@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import NewGameForm from '../components/forms/NewGameForm'
-import Lobby from '../components/Lobby'
+import NewGameForm from './components/forms/NewGameForm'
+import Lobby from './components/Lobby'
 import './App.css'
 
 class App extends Component {

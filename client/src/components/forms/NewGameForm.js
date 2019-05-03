@@ -1,32 +1,29 @@
 import React, { Component } from 'react'
+import Form from './Form'
 
-class NewGameForm extends Component {
-	state = {
-		roomCode: ''
-	}
+const NewGameForm = (props) => {
 
-	handleChange = (e) => {
-		this.setState({ roomCode: e.target.value })
-	}
+	const { handleEnterGame, handleCreateNewGame } = this.props
 
-	render() {
-		const { handleEnterGame, handleCreateNewGame } = this.props
-
-		return (
-			<div>
-				<form onSubmit={handleEnterGame}>
-					<input
-						type='text'
-						onChange={this.handleChange}
-						value={this.state.roomCode}
-						placeholder='enter room code'
-					/>
-					<input type='submit' />
-				</form>
+	return (
+		<div>
+			<Form handleSubmit={handleEnterGame} placeholder={"enter room code"}>
 				<button onClick={handleCreateNewGame}>Create New Game</button>
-			</div>
-		)
-	}
+			</Form>
+		</div>
+	)
+
 }
 
 export default NewGameForm
+
+// <form onSubmit={handleEnterGame}>
+// 	<input
+// 		type='text'
+// 		onChange={this.handleChange}
+// 		value={this.state.roomCode}
+// 		placeholder='enter room code'
+// 	/>
+// 	<input type='submit' />
+// </form>
+// <button onClick={handleCreateNewGame}>Create New Game</button>

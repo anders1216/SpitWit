@@ -1,11 +1,10 @@
 import React, {Component} from 'react'
+import Form from './Form'
 
 const NewPlayerForm = (props) => {
   return(
     <div>
-      <form>
-        <input type="text" onChange={props.handleChange} value={props.player.name} placeholder="Who are you?"></input>
-      </form>
+      <Form handleSubmit={this.props.setCurrentPlayer} placeholder={"enter player name"}/>
     </div>
   )
 }
