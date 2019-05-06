@@ -11,7 +11,16 @@ class Lobby extends Component {
 		const { currPlayer } = this.context
 
 		return (
-			<div>{currPlayer ? this.renderJoinedPlayers : <NewPlayerForm handleSubmit={this.setCurrentPlayer} />}</div>
+			<div>
+				{currPlayer ? (
+					<React.Fragment>
+						{this.renderJoinedPlayers()}
+						{currPlayer.isHost && <button onClick={this.props.handleStartGame}>Start Game</button>}
+					</React.Fragment>
+				) : (
+					<NewPlayerForm handleSubmit={this.props.handleSubmit} />
+				)}
+			</div>
 		)
 	}
 }

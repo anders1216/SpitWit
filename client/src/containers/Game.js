@@ -80,22 +80,31 @@ class Game extends Component {
 	}
 
 	// Passed down to post new Player to the DB.
-	setCurrentPlayer = (player) => {
+	createNewPlayer = (playerName) => {
 		let is_host = this.props.isHost
 		let game_id = this.props.game.id
 		// localStorage.setItem('currPlayer': player)
-		fetch('http://localhost:3000/players', {
+
+		fetch(this.props.apiUrl + 'players', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ name: player, game_id: game_id, is_host: is_host })
+			body: JSON.stringify({ name: playerName, game_id: game_id, is_host: is_host })
 		})
-		this.setState({ currPlayer: player })
+			.then((res) => res.json())
+			.then((player) => this.setState({ currPlayer: player }))
 	}
 
 	renderJoinedPlayers() {
 		return <div>{this.state.players.map((player) => <Player {...player} />)}</div>
 	}
-	//ipassed down to post new anwers to the DB.
+
+	startGame() {
+		const timer = { timer: 90 }
+		this.setState(timer)
+		this.gameSub.send(timer)
+	}
+
+	// passed down to post new anwers to the DB.
 	handleNewAnswer = (answer) => {
 		let player_id = this.state.currentPlayer.id
 		fetch('http://localhost:3000/answers', {
@@ -104,19 +113,20 @@ class Game extends Component {
 			body: JSON.stringify({ text: answer, player_id: player_id })
 		})
 	}
-	//conditionally render components based on the current step of the game.
 
 	render() {
 		//defining a varible to establish "context" based on all aspects of the context we intend to access later.
 		const context = { currPlayer: this.state.currPlayer, game: this.props.game }
 
+		//conditionally render components based on the current step of the game.
 		let GameComponent
 		//set a varaible to be rendered. if the game has started render the answer from, if not render the lobby if the answerforms have been rendered and passed and the timer reaches 0, initiating a round, render round 1.
 		if (this.state.round_number === 0) {
 			if (this.state.timer > 0) {
 				GameComponent = <AnswerForm handleSubmit={this.handleNewAnswer} />
+			} else {
+				GameComponent = <Lobby handleStartGame={this.startGame} handleSubmit={this.createNewPlayer} />
 			}
-			GameComponent = <Lobby handleSubmit={this.setCurrentPlayer} />
 		} else {
 			GameComponent = <Round />
 		}
