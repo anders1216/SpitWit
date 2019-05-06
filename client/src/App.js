@@ -24,7 +24,6 @@ class App extends Component {
 	handleCreateNewGame = () => {
 		fetch(this.API_URL + 'games', {
 			method: 'POST',
-			mode: 'cors', // no-cors, cors, *same-origin
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -34,15 +33,16 @@ class App extends Component {
 	}
 
 	render() {
+		const { game, isHost } = this.state
+
 		return (
 			<div>
-				{this.state.game ? (
-					<Game game={this.state.game} ishHost={this.state.isHost} apiUrl={this.API_URL} />
+				{game ? (
+					<Game game={game} isHost={isHost} apiUrl={this.API_URL} />
 				) : (
 					<NewGameForm
 						handleEnterGame={this.handleEnterGame}
 						handleCreateNewGame={this.handleCreateNewGame}
-						hasValidGame={this.state.hasValidGame}
 					/>
 				)}
 			</div>

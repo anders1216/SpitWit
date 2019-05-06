@@ -7,7 +7,7 @@ class GamesController < ApplicationController
   def create
     init = {
       room_code: Game.generate_room_code, 
-      round: 0
+      round_number: 0
     }
 
     @game = Game.create(init)
@@ -24,4 +24,6 @@ class GamesController < ApplicationController
       render json: { errors: @game.errors.full_messages }, status: :unprocessible_entity
     end
   end
+
+
 end
