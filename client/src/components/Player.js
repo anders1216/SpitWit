@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Player = (props) => {
-	return <p>player.name</p>
+	return <p>{props.name}</p>
 }
 
 export default Player

@@ -37,6 +37,7 @@ import Player from '../components/Player'
 export const GameContext = React.createContext()
 
 class Game extends Component {
+	intervalId
 	state = {
 		currPlayer: null,
 		round_number: 0,
@@ -57,7 +58,7 @@ class Game extends Component {
 
 		// Player subscription
 		this.playerSub = cable.subscriptions.create('PlayersChannel', {
-			received: this.handleReceivePlayerUpdate
+			received: this.handleReceivePlayersUpdate
 		})
 	}
 	// If the host leaves sends mesage to console. may update later to set an Alert that communicates to non host players the end of game.
@@ -66,18 +67,15 @@ class Game extends Component {
 	}
 
 	//updating the round number as the game continues.
-	handleReceiveGameUpdate = (data) => {
-		const { timer, prompt, answers, round_number } = data
+	handleReceiveGameUpdate = (game) => {
+		const { timer, prompt, answers, round_number } = game
 
 		round_number && this.setState({ roundNumber: round_number })
 	}
 
 	// Adding new players to players to the players array if they havent been added.
-	handleReceivePlayerUpdate = (player) => {
-		console.log('new player created')
-		if (!this.state.players.includes(player)) {
-			this.setState({ players: [ ...this.state.players, player ] })
-		}
+	handleReceivePlayersUpdate = (players) => {
+		this.setState({ players })
 	}
 
 	// Passed down to post new Player to the DB.
@@ -106,9 +104,12 @@ class Game extends Component {
 	}
 
 	startGame = () => {
-		const timer = 90
-		this.setState({timer: timer})
-		this.gameSub.send({timer: timer})
+		this.setState({ timer: 90 }, () => {
+			this.intervalId = setInterval(() => {
+				this.setState({ timer: this.state.timer - 1 })
+			}, 1000)
+		})
+		this.gameSub.send({ timer: 90 })
 	}
 
 	// passed down to post new anwers to the DB.
@@ -117,7 +118,12 @@ class Game extends Component {
 		fetch('http://localhost:3000/answers', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ text: answer, player_id: player_id, game_id: this.props.game.id, round_number: this.state.round_number})
+			body: JSON.stringify({
+				text: answer,
+				player_id: player_id,
+				game_id: this.props.game.id,
+				round_number: this.state.round_number
+			})
 		})
 	}
 
@@ -147,10 +153,7 @@ class Game extends Component {
 			GameComponent = <Round currPlayer={currPlayer} game={game} />
 		}
 
-		return (
-			//render the variable thats been defined above.
-			<div>{GameComponent}</div>
-		)
+		return <div>{GameComponent}</div>
 	}
 }
 
