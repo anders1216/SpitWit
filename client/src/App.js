@@ -7,14 +7,19 @@ class App extends Component {
 	API_URL = 'http://localhost:3000/'
 
 	state = {
-		hasValidGame: false
+    isHost: false,
+    game: null
 	}
 
-	handleEnterGame = (roomCode) => {
-		fetch(this.API_URL).then((res) => res.json()).then((games) => {
-			if (games.some((game) => game.room_code === roomCode)) {
-				this.setState({ hasValidGame: true })
+	handleEnterGame = (ev, roomCode) => {
+    ev.preventDefault()
+    console.log(roomCode)
+		fetch(this.API_URL + "games").then((res) => res.json()).then((games) => {
+      const game = games.some((game) => game.room_code === roomCode)
+      if (game) {
+				this.setState({ game: game })
 			}
+
 		})
 	}
 
@@ -23,16 +28,15 @@ class App extends Component {
 			method: 'POST',
 			mode: 'cors', // no-cors, cors, *same-origin
 			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then((res) => this.setState({ hasValidGame: true }))
+				'Content-Type': 'application/json'}}).then(res => res.json())
+      .then(game => this.setState({ game: game, isHost: true }))
 	}
 
 	render() {
 		return (
 			<div>
-				{this.state.hasValidGame ? (
-					<Game apiUrl={this.API_URL} />
+				{this.state.game ? (
+					<Game game={this.state.game} ishHost={this.state.isHost} apiUrl={this.API_URL} />
 				) : (
 					<NewGameForm
 						handleEnterGame={this.handleEnterGame}

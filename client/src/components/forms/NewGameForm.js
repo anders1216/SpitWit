@@ -3,7 +3,7 @@ import Form from './Form'
 
 const NewGameForm = (props) => {
 
-	const { handleEnterGame, handleCreateNewGame } = this.props
+	const { handleEnterGame, handleCreateNewGame } = props
 
 	return (
 		<div>
