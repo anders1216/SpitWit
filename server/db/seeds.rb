@@ -8,5 +8,5 @@
 
 require_relative "prompts_data"
 
-PromptsDB.data.each do {|p| Prompt.create(question: p[:prompt])}
+PromptsDB.data.each {|p| Prompt.find_or_create_by!(question: p[:prompt])}
 Game.create(room_code: Game.generate_room_code)
