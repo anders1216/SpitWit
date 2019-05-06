@@ -49,7 +49,7 @@ class GamesChannel < ApplicationCable::Channel
           votes: {
             "#{answers[0].player.id}": answers[0].votes.size,
             "#{answers[1].player.id}": answers[1].votes.size
-          }
+          },
           timer: data.timer
         }) 
       end
