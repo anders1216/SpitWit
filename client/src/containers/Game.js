@@ -105,19 +105,19 @@ class Game extends Component {
 		return <div>{this.state.players.map((player) => <Player {...player} />)}</div>
 	}
 
-	startGame() {
-		const timer = { timer: 90 }
-		this.setState(timer)
-		this.gameSub.send(timer)
+	startGame = () => {
+		const timer = 90
+		this.setState({timer: timer})
+		this.gameSub.send({timer: timer})
 	}
 
 	// passed down to post new anwers to the DB.
 	handleNewAnswer = (answer) => {
-		let player_id = this.state.currentPlayer.id
+		let player_id = this.state.currPlayer.id
 		fetch('http://localhost:3000/answers', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ text: answer, player_id: player_id })
+			body: JSON.stringify({ text: answer, player_id: player_id, game_id: this.props.game.id, round_number: this.state.round_number})
 		})
 	}
 

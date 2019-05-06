@@ -12,8 +12,9 @@ class Lobby extends Component {
 			<div>
 				{currPlayer ? (
 					<React.Fragment>
+						{console.log(currPlayer)}
 						{players.map((player) => <Player {...player} />)}
-						{currPlayer.isHost && <button onClick={this.props.handleStartGame}>Start Game</button>}
+						{currPlayer.is_host && <button onClick={this.props.handleStartGame}>Start Game</button>}
 					</React.Fragment>
 				) : (
 					<NewPlayerForm handleSubmit={this.props.handleSubmit} />
