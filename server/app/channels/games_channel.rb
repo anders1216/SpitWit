@@ -17,16 +17,24 @@ class GamesChannel < ApplicationCable::Channel
     # Voting round will be 90 seconds
     # Post-voting round will display vote results for 3 seconds
 
-    if data.timer > 0
+    round = game.rounds[game.round_number] 
+    prompt = round.prompt
+    answers = round.answers
+
+    if data.timer == 90 
+      ActionCable.server.broadcast('games', {
+        prompt: prompt,
+        answers: {
+          "#{answers[0].player.id}": answers[0],
+          "#{answers[1].player.id}": answers[1]
+        }
+      }
+    elsif data.timer > 0 
       # Decrement timer
       ActionCable.server.broadcast('games', {
         timer: data.timer
       }) 
-    else
-      round = game.rounds[game.round_number] 
-      prompt = round.prompt
-      answers = round.answers
-
+    elsif data.timer == 0
       # Timer hit 0 after voting round, progress to next round
       if !is_voting_round
         new_round = game.round_number + 1
@@ -35,11 +43,6 @@ class GamesChannel < ApplicationCable::Channel
         ActionCable.server.broadcast('games', {
           round_number: new_round,
           is_voting_round: !data.is_voting_round,
-          prompt: prompt,
-          answers: {
-            "#{answers[0].player.id}": answers[0],
-            "#{answers[1].player.id}": answers[1]
-          },
           timer: data.timer
         })
       else

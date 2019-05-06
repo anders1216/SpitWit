@@ -5,8 +5,8 @@ class PlayersController < ApplicationController
   end
  
   def create
-
     @player = Player.create(player_params)
+    ActionCable.server.broadcast('players', Player.all)
     render json: @player
   end
 
@@ -15,7 +15,6 @@ class PlayersController < ApplicationController
     @player.update(player_params)
 
     if @player.save
-      ActionCable.server.broadcast('players', {id: @player.id, name: @player.name, is_host: @player.is_host, score: @player.score, game_id:@player.game_id})
       render json: @player, status: :accepted
     else
       render json: { errors: @player.errors.full_messages }, status: :unprocessible_entity

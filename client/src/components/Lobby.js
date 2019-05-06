@@ -6,14 +6,12 @@ import { GameContext } from '../containers/Game'
 class Lobby extends Component {
 	render() {
 		const { currPlayer, game, players } = this.props
-		console.log(players)
 
 		return (
 			<div>
 				{currPlayer ? (
 					<React.Fragment>
-						{console.log(currPlayer)}
-						{players.map((player) => <Player {...player} />)}
+						{players.map((player, i) => <Player key={i} {...player} />)}
 						{currPlayer.is_host && <button onClick={this.props.handleStartGame}>Start Game</button>}
 					</React.Fragment>
 				) : (

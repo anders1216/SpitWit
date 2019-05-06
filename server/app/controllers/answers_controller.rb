@@ -5,21 +5,13 @@ class AnswersController < ApplicationController
   end
  
   def create 
-    @answer = Answer.create(answer_params)
+    @answer = Answer.create(
+      text: answer_params[:text],
+      player_id: answer_params[:player_id],
+      round_id: Round.find_by(round_number: answer_params[:round_number], game_id: answer_params[:game_id]).id
+    )
     
-    #ActionCable.server.broadcast('answers', data)
     render json: @answer
-  end
-
-  def update
-    @answer = Answer.find(params[:id])
-    @answer.update(answer_params)
-
-    if @answer.save
-      render json: @answer, status: :accepted
-    else
-      render json: { errors: @answer.errors.full_messages }, status: :unprocessible_entity
-    end
   end
  
   private
