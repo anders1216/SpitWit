@@ -11,8 +11,9 @@ class App extends Component {
 	}
 
 	handleEnterGame = (roomCode) => {
-		fetch(this.API_URL).then((res) => res.json()).then((games) => {
-			if (games.some((game) => game.room_code === roomCode)) {
+		fetch(this.API_URL + 'games').then((res) => res.json()).then((games) => {
+			if (games.some((game) => game.room_code === roomCode.toUpperCase())) {
+				console.log('hi')
 				this.setState({ hasValidGame: true })
 			}
 		})

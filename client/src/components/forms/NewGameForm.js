@@ -2,17 +2,15 @@ import React, { Component } from 'react'
 import Form from './Form'
 
 const NewGameForm = (props) => {
-
-	const { handleEnterGame, handleCreateNewGame } = this.props
+	const { handleEnterGame, handleCreateNewGame } = props
 
 	return (
 		<div>
-			<Form handleSubmit={handleEnterGame} placeholder={"enter room code"}>
+			<Form handleSubmit={handleEnterGame} placeholder={'enter room code'}>
 				<button onClick={handleCreateNewGame}>Create New Game</button>
 			</Form>
 		</div>
 	)
-
 }
 
 export default NewGameForm
