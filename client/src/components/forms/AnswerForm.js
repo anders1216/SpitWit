@@ -6,7 +6,7 @@ const AnswerForm = (props) => {
 	return (
 		<div>
 			<Prompt />
-			<Form onSubmit={this.props.handleSubmit} placeholder={"enter answer here"}/>
+			<Form onSubmit={props.handleSubmit} placeholder={"enter answer here"}/>
 		</div>
 	)
 }
