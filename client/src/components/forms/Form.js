@@ -9,6 +9,7 @@ class Form extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault()
+		console.log(this.props)
 		this.props.handleSubmit(this.state.input)
 	}
 
