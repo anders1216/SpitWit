@@ -23,6 +23,10 @@ class GamesChannel < ApplicationCable::Channel
         timer: data.timer
       }) 
     else
+      round = game.rounds[game.round_number] 
+      prompt = round.prompt
+      answers = round.answers
+
       # Timer hit 0 after voting round, progress to next round
       if !is_voting_round
         new_round = game.round_number + 1
@@ -31,12 +35,21 @@ class GamesChannel < ApplicationCable::Channel
         ActionCable.server.broadcast('games', {
           round_number: new_round,
           is_voting_round: !data.is_voting_round,
+          prompt: prompt,
+          answers: {
+            "#{answers[0].player.id}": answers[0],
+            "#{answers[1].player.id}": answers[1]
+          },
           timer: data.timer
         })
       else
         # Toggle is_voting_round on new round
         ActionCable.server.broadcast('games', {
           is_voting_round: !data.is_voting_round,
+          votes: {
+            "#{answers[0].player.id}": answers[0].votes.size,
+            "#{answers[1].player.id}": answers[1].votes.size
+          }
           timer: data.timer
         }) 
       end
