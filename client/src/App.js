@@ -11,11 +11,10 @@ class App extends Component {
 		game: null
 	}
 
-	handleEnterGame = (ev, roomCode) => {
-		ev.preventDefault()
-		console.log(roomCode)
+	handleEnterGame = (roomCode) => {
 		fetch(this.API_URL + 'games').then((res) => res.json()).then((games) => {
-			const game = games.some((game) => game.room_code === roomCode)
+			const game = games.find((game) => game.room_code === roomCode.toUpperCase())
+
 			if (game) {
 				this.setState({ game: game })
 			}
