@@ -9,6 +9,22 @@ class GamesChannel < ApplicationCable::Channel
   end
 
   def receive(data)
+    if data["NUKE"]
+      Round.delete_all
+      Answer.delete_all
+      Player.delete_all
+
+      while Game.last && Game.first != Game.last
+        Game.last.delete
+      end
+
+      Game.find_or_create_by!(id: 1, room_code: "TEST", round_number: 0)
+      Player.create(id: 1, game_id: 1, name: "PLAYER ONE 👑", is_host: true) 
+      Player.create(id: 2, game_id: 1, name: "PLAYER TWO", is_host: false)   
+      Player.create(id: 3, game_id: 1, name: "PLAYER THREE", is_host: false)   
+      return
+    end
+
     game = Game.find(data["game_id"])
 
     # There are two timers for the voting round and post-voting round

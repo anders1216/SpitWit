@@ -24,6 +24,4 @@ class GamesController < ApplicationController
       render json: { errors: @game.errors.full_messages }, status: :unprocessible_entity
     end
   end
-
-
 end
