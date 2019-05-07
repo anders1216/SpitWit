@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_184414) do
 
   create_table "answers", force: :cascade do |t|
     t.integer "player_id"
-    t.integer "answer_id"
+    t.integer "round_id"
     t.string "text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
