@@ -77,11 +77,26 @@ class Game extends Component {
 
   //updating the round number as the game continues.
   handleReceiveGameUpdate = game => {
-    const { timer, round, round_number, player_prompts } = game;
+    const {
+      timer,
+      round,
+      round_number,
+      player_prompts,
+      is_voting_phase
+    } = game;
 
+    console.log(round_number);
     round_number && this.setState({ round_number: round_number });
     player_prompts && this.setState({ player_prompts: player_prompts });
-    console.log(player_prompts);
+
+    if (
+      this.state.round_number > 0 &&
+      is_voting_phase != this.state.is_voting_phase
+    ) {
+      const newTimer = 15;
+      this.setState({ is_voting_phase: is_voting_phase, timer: newTimer });
+      this.gameSub.send({ game_id: this.props.game.id, timer: newTimer });
+    }
   };
 
   // Adding new players to players to the players array if they havent been added.
@@ -120,12 +135,27 @@ class Game extends Component {
   }
 
   startGame = () => {
-    this.setState({ timer: 90 }, () => {
+    const timeLimit = 5;
+    const { is_voting_phase, round_number, timer } = this.state;
+
+    this.setState({ timer: timeLimit }, () => {
       this.intervalId = setInterval(() => {
-        this.setState({ timer: this.state.timer - 1 });
+        const newTimer = this.state.timer - 1;
+        this.setState({ timer: newTimer });
+        this.gameSub.send({
+          game_id: this.props.game.id,
+          timer: newTimer,
+          round_number: round_number
+        });
       }, 1000);
     });
-    this.gameSub.send({ game_id: this.props.game.id, timer: 90 });
+
+    this.gameSub.send({
+      game_id: this.props.game.id,
+      timer: timeLimit,
+      timeLimit: timeLimit,
+      is_voting_phase: is_voting_phase
+    });
   };
 
   // passed down to post new anwers to the DB.
@@ -147,7 +177,13 @@ class Game extends Component {
   };
 
   render() {
-    const { currPlayer, players, round, player_prompts } = this.state;
+    const {
+      currPlayer,
+      players,
+      round,
+      round_number,
+      player_prompts
+    } = this.state;
     const { game } = this.props;
 
     // Conditionally render components based on the current state of the game.
@@ -175,11 +211,20 @@ class Game extends Component {
       }
     } else {
       GameComponent = (
-        <Round round={round} currPlayer={currPlayer} game={game} />
+        <Round
+          round_number={round_number}
+          currPlayer={currPlayer}
+          game={game}
+        />
       );
     }
 
-    return <div>{GameComponent}</div>;
+    return (
+      <div>
+        <div>{this.state.timer}</div>
+        {GameComponent}
+      </div>
+    );
   }
 }
 

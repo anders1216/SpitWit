@@ -16,17 +16,17 @@ class AnswerForm extends Component {
   render() {
     const { player_prompts, currPlayer } = this.props;
     const { answer1, answer2 } = this.state;
-    let playersPrompts = player_prompts[currPlayer.id];
+    let prompts = player_prompts[currPlayer.id];
     return (
       <div>
-        <Prompt prompt={playersPrompts[0]} />
+        <Prompt prompt={prompts[0].prompt} />
         <Form
           name={"answer1"}
           disabled={answer1}
           handleSubmit={this.handleSubmit}
           placeholder={"enter answer here"}
         />
-        <Prompt prompt={playersPrompts[1]} />
+        <Prompt prompt={prompts[1].prompt} />
         <Form
           name={"answer2"}
           disabled={answer2}

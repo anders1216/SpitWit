@@ -1,11 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from "react";
 
-const Prompt = (props) => {
-  return(
-    <div>
-      Prompt
-    </div>
-  )
-}
+const Prompt = props => {
+  return <div>{props.prompt}</div>;
+};
 
-export default Prompt
+export default Prompt;
