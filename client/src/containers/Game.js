@@ -42,7 +42,11 @@ class Game extends Component {
 		currPlayer: null,
 		round_number: 0,
 		timer: 0,
-		players: []
+		players: [],
+		prompt: "",
+		answers: [],
+		votes: [],
+		player_prompts: null
 	}
 
 	// Start subscription after successfully joining game
@@ -68,9 +72,11 @@ class Game extends Component {
 
 	//updating the round number as the game continues.
 	handleReceiveGameUpdate = (game) => {
-		const { timer, prompt, answers, round_number } = game
+		const { timer, prompt, answers, round_number, votes, player_prompts} = game
 
-		round_number && this.setState({ roundNumber: round_number })
+		round_number && this.setState({ roundNumber: round_number})
+		player_prompts && this.setState({player_prompts: player_prompts})
+		console.log(player_prompts)
 	}
 
 	// Adding new players to players to the players array if they havent been added.
@@ -109,35 +115,37 @@ class Game extends Component {
 				this.setState({ timer: this.state.timer - 1 })
 			}, 1000)
 		})
-		this.gameSub.send({ timer: 90 })
+		this.gameSub.send({game_id: this.props.game.id,  timer: 90 })
 	}
 
 	// passed down to post new anwers to the DB.
 	handleNewAnswer = (answer) => {
+		console.log(this.props.game.id, this.state.round_number)
 		let player_id = this.state.currPlayer.id
 		fetch('http://localhost:3000/answers', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
+			body: JSON.stringify({answer: {
 				text: answer,
 				player_id: player_id,
 				game_id: this.props.game.id,
 				round_number: this.state.round_number
-			})
+			}})
 		})
 	}
 
 	render() {
 		//defining a varible to establish "context" based on all aspects of the context we intend to access later.
-		const { currPlayer, players } = this.state
+		const { currPlayer, players, prompt, answers, votes, player_prompts} = this.state
 		const { game } = this.props
+		console.log(player_prompts)
 
 		//conditionally render components based on the current step of the game.
 		let GameComponent
 		//set a varaible to be rendered. if the game has started render the answer from, if not render the lobby if the answerforms have been rendered and passed and the timer reaches 0, initiating a round, render round 1.
 		if (this.state.round_number === 0) {
-			if (this.state.timer > 0) {
-				GameComponent = <AnswerForm handleSubmit={this.handleNewAnswer} currPlayer={currPlayer} game={game} />
+			if (player_prompts) {
+				GameComponent = <AnswerForm handleSubmit={this.handleNewAnswer} currPlayer={currPlayer} game={game} player_prompts={player_prompts}/>
 			} else {
 				GameComponent = (
 					<Lobby
@@ -146,11 +154,12 @@ class Game extends Component {
 						players={players}
 						currPlayer={currPlayer}
 						game={game}
+
 					/>
 				)
 			}
 		} else {
-			GameComponent = <Round currPlayer={currPlayer} game={game} />
+			GameComponent = <Round prompt={prompt} answers={answers} votes={votes} currPlayer={currPlayer} game={game} />
 		}
 
 		return <div>{GameComponent}</div>
