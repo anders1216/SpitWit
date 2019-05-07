@@ -9,6 +9,14 @@ class GamesChannel < ApplicationCable::Channel
   end
 
   def receive(data)
+    if data["NUKE"]
+      Round.delete_all
+      Answer.delete_all
+      Player.delete_all
+      Game.delete_all
+      return
+    end
+
     game = Game.find(data["game_id"])
 
     # There are two timers for the voting round and post-voting round

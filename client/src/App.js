@@ -8,7 +8,11 @@ class App extends Component {
 
 	state = {
 		isHost: true,
-		game: null
+		game: {
+			id: 1,
+			round_number: 0,
+			room_code: 'TEST'
+		}
 	}
 
 	handleEnterGame = (roomCode) => {
