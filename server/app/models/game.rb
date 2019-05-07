@@ -5,17 +5,17 @@ class Game < ApplicationRecord
   # Create prompts and assign them to players for rounds
   def create_rounds
     player_prompts = {}
-    prompts = Prompt.all.sample(game.players.length)
+    prompts = Prompt.all.sample(self.players.length)
     
     prompts.each_with_index do |prompt, i|
-      Round.create(prompt_id: prompt.id, round_number: i+1, game_id: game.id)
-      player_prompts[game.players[i].id] ||= []
-      player_prompts[game.players[i].id] << prompt[:question]
+      Round.create(prompt_id: prompt.id, round_number: i+1, game_id: self.id)
+      player_prompts[self.players[i].id] ||= []
+      player_prompts[self.players[i].id] << prompt[:question]
       if(i+1 == prompts.length)
-        player_prompts[game.players[0].id] << prompt[:question]
+        player_prompts[self.players[0].id] << prompt[:question]
       else
-        player_prompts[game.players[i+1].id] ||= []
-        player_prompts[game.players[i+1].id] << prompt[:question]
+        player_prompts[self.players[i+1].id] ||= []
+        player_prompts[self.players[i+1].id] << prompt[:question]
       end
     end
 

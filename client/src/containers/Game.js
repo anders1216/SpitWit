@@ -79,8 +79,9 @@ class Game extends Component {
 	handleReceiveGameUpdate = (game) => {
 		const { timer, round, round_number, player_prompts } = game
 
-		round_number && this.setState({ roundNumber: round_number })
+		round_number && this.setState({ round_number: round_number })
 		player_prompts && this.setState({ player_prompts: player_prompts })
+		console.log(player_prompts)
 	}
 
 	// Adding new players to players to the players array if they havent been added.
@@ -90,8 +91,7 @@ class Game extends Component {
 
 	// Passed down to post new Player to the DB.
 	createNewPlayer = (playerName) => {
-		let is_host = this.props.isHost
-		let game_id = this.props.game.id
+		const { isHost, game } = this.props
 		// localStorage.setItem('currPlayer': player)
 
 		fetch(this.props.apiUrl + 'players', {
@@ -99,8 +99,8 @@ class Game extends Component {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				name: playerName,
-				game_id: game_id,
-				is_host: is_host
+				game_id: game.id,
+				is_host: isHost
 			})
 		})
 			.then((res) => res.json())
@@ -124,16 +124,18 @@ class Game extends Component {
 
 	// passed down to post new anwers to the DB.
 	handleNewAnswer = (answer) => {
-		let player_id = this.state.currPlayer.id
-		fetch('http://localhost:3000/answers', {
+		const { currPlayer, round_number } = this.state
+		const { apiUrl, game } = this.props
+
+		fetch(apiUrl + 'answers', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				answer: {
 					text: answer,
-					player_id: player_id,
-					game_id: this.props.game.id,
-					round_number: this.state.round_number
+					player_id: currPlayer.id,
+					game_id: game.id,
+					round_number: round_number
 				}
 			})
 		})
