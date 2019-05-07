@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import ActionCable from 'actioncable'
+import React, { Component } from "react";
+import ActionCable from "actioncable";
 
-import Lobby from '../components/Lobby'
-import AnswerForm from '../components/forms/AnswerForm'
-import Round from './Round'
-import Player from '../components/Player'
+import Lobby from "../components/Lobby";
+import AnswerForm from "../components/forms/AnswerForm";
+import Round from "./Round";
+import Player from "../components/Player";
 
 // This is the main component that handles subscriptions.
 // The main communication is between the host's client and the server.
@@ -37,143 +37,195 @@ import Player from '../components/Player'
 //   }
 // }
 
-export const GameContext = React.createContext()
+export const GameContext = React.createContext();
 
 class Game extends Component {
-	intervalId
-	state = {
-		currPlayer: null,
-		players: [],
-		player_prompts: null,
-		round_number: 0,
-		is_voting_phase: false,
-		timer: 0,
-		round: {
-			answers: {},
-			votes: {}
-		}
-	}
+  intervalId;
+  state = {
+    currPlayer: null,
+    players: [],
+    player_prompts: null,
+    round_number: 0,
+    is_voting_phase: false,
+    timer: 0,
+    round: {
+      answers: {},
+      votes: {}
+    }
+  };
 
-	// Start subscription after successfully joining game
-	componentDidMount() {
-		const cableUrl = this.props.apiUrl.replace(/(https|http)/g, 'ws') + 'cable'
-		const cable = ActionCable.createConsumer(cableUrl)
+  // Start subscription after successfully joining game
+  componentDidMount() {
+    const cableUrl = this.props.apiUrl.replace(/(https|http)/g, "ws") + "cable";
+    const cable = ActionCable.createConsumer(cableUrl);
 
-		// Game subscription
-		this.gameSub = cable.subscriptions.create('GamesChannel', {
-			connected: () => console.log('connected to game.'),
-			received: this.handleReceiveGameUpdate
-		})
+    // Game subscription
+    this.gameSub = cable.subscriptions.create("GamesChannel", {
+      connected: () => console.log("connected to game."),
+      received: this.handleReceiveGameUpdate
+    });
 
-		// Player subscription
-		this.playerSub = cable.subscriptions.create('PlayersChannel', {
-			received: this.handleReceivePlayersUpdate
-		})
-	}
-	// If the host leaves sends mesage to console. may update later to set an Alert that communicates to non host players the end of game.
-	componentWillUnmount() {
-		console.log('disconnected from game.')
-	}
+    // Player subscription
+    this.playerSub = cable.subscriptions.create("PlayersChannel", {
+      received: this.handleReceivePlayersUpdate
+    });
+  }
+  // If the host leaves sends mesage to console. may update later to set an Alert that communicates to non host players the end of game.
+  componentWillUnmount() {
+    console.log("disconnected from game.");
+  }
 
-	//updating the round number as the game continues.
-	handleReceiveGameUpdate = (game) => {
-		const { timer, round, round_number, player_prompts } = game
+  //updating the round number as the game continues.
+  handleReceiveGameUpdate = game => {
+    const {
+      timer,
+      round,
+      round_number,
+      player_prompts,
+      is_voting_phase
+    } = game;
 
-		round_number && this.setState({ round_number: round_number })
-		player_prompts && this.setState({ player_prompts: player_prompts })
-		console.log(player_prompts)
-	}
+    console.log(round_number);
+    round_number && this.setState({ round_number: round_number });
+    player_prompts && this.setState({ player_prompts: player_prompts });
 
-	// Adding new players to players to the players array if they havent been added.
-	handleReceivePlayersUpdate = (players) => {
-		this.setState({ players })
-	}
+    if (
+      this.state.round_number > 0 &&
+      is_voting_phase != this.state.is_voting_phase
+    ) {
+      const newTimer = 15;
+      this.setState({ is_voting_phase: is_voting_phase, timer: newTimer });
+      this.gameSub.send({ game_id: this.props.game.id, timer: newTimer });
+    }
+  };
 
-	// Passed down to post new Player to the DB.
-	createNewPlayer = (playerName) => {
-		const { isHost, game } = this.props
-		// localStorage.setItem('currPlayer': player)
+  // Adding new players to players to the players array if they havent been added.
+  handleReceivePlayersUpdate = players => {
+    this.setState({ players });
+  };
 
-		fetch(this.props.apiUrl + 'players', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				name: playerName,
-				game_id: game.id,
-				is_host: isHost
-			})
-		})
-			.then((res) => res.json())
-			.then((player) => {
-				this.setState({ currPlayer: player })
-			})
-	}
+  // Passed down to post new Player to the DB.
+  createNewPlayer = playerName => {
+    const { isHost, game } = this.props;
+    // localStorage.setItem('currPlayer': player)
 
-	renderJoinedPlayers() {
-		return <div>{this.state.players.map((player) => <Player {...player} />)}</div>
-	}
+    fetch(this.props.apiUrl + "players", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: playerName,
+        game_id: game.id,
+        is_host: isHost
+      })
+    })
+      .then(res => res.json())
+      .then(player => {
+        this.setState({ currPlayer: player });
+      });
+  };
 
-	startGame = () => {
-		this.setState({ timer: 90 }, () => {
-			this.intervalId = setInterval(() => {
-				this.setState({ timer: this.state.timer - 1 })
-			}, 1000)
-		})
-		this.gameSub.send({ game_id: this.props.game.id, timer: 90 })
-	}
+  renderJoinedPlayers() {
+    return (
+      <div>
+        {this.state.players.map(player => (
+          <Player {...player} />
+        ))}
+      </div>
+    );
+  }
 
-	// passed down to post new anwers to the DB.
-	handleNewAnswer = (answer) => {
-		const { currPlayer, round_number } = this.state
-		const { apiUrl, game } = this.props
+  startGame = () => {
+    const timeLimit = 5;
+    const { is_voting_phase, round_number, timer } = this.state;
 
-		fetch(apiUrl + 'answers', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				answer: {
-					text: answer,
-					player_id: currPlayer.id,
-					game_id: game.id,
-					round_number: round_number
-				}
-			})
-		})
-	}
+    this.setState({ timer: timeLimit }, () => {
+      this.intervalId = setInterval(() => {
+        const newTimer = this.state.timer - 1;
+        this.setState({ timer: newTimer });
+        this.gameSub.send({
+          game_id: this.props.game.id,
+          timer: newTimer,
+          round_number: round_number
+        });
+      }, 1000);
+    });
 
-	render() {
-		const { currPlayer, players, round, player_prompts } = this.state
-		const { game } = this.props
+    this.gameSub.send({
+      game_id: this.props.game.id,
+      timer: timeLimit,
+      timeLimit: timeLimit,
+      is_voting_phase: is_voting_phase
+    });
+  };
 
-		// Conditionally render components based on the current state of the game.
-		let GameComponent
-		if (this.state.round_number === 0) {
-			if (player_prompts) {
-				GameComponent = (
-					<AnswerForm
-						handleSubmit={this.handleNewAnswer}
-						currPlayer={currPlayer}
-						game={game}
-						player_prompts={player_prompts}
-					/>
-				)
-			} else {
-				GameComponent = (
-					<Lobby
-						handleStartGame={this.startGame}
-						handleSubmit={this.createNewPlayer}
-						players={players}
-						currPlayer={currPlayer}
-						game={game}
-					/>
-				)
-			}
-		} else {
-			GameComponent = <Round round={round} currPlayer={currPlayer} game={game} />
-		}
+  // passed down to post new anwers to the DB.
+  handleNewAnswer = (answer, num) => {
+    const { currPlayer, player_prompts } = this.state;
+    const { apiUrl, game } = this.props;
+    console.log(player_prompts[currPlayer.id][num].round_id);
+    fetch(apiUrl + "answers", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        answer: {
+          text: answer,
+          player_id: currPlayer.id,
+          round_id: player_prompts[currPlayer.id][num].round_id
+        }
+      })
+    });
+  };
 
-		return <div>{GameComponent}</div>
-	}
+  render() {
+    const {
+      currPlayer,
+      players,
+      round,
+      round_number,
+      player_prompts
+    } = this.state;
+    const { game } = this.props;
+
+    // Conditionally render components based on the current state of the game.
+    let GameComponent;
+    if (this.state.round_number === 0) {
+      if (player_prompts) {
+        GameComponent = (
+          <AnswerForm
+            handleSubmit={this.handleNewAnswer}
+            currPlayer={currPlayer}
+            game={game}
+            player_prompts={player_prompts}
+          />
+        );
+      } else {
+        GameComponent = (
+          <Lobby
+            handleStartGame={this.startGame}
+            handleSubmit={this.createNewPlayer}
+            players={players}
+            currPlayer={currPlayer}
+            game={game}
+          />
+        );
+      }
+    } else {
+      GameComponent = (
+        <Round
+          round_number={round_number}
+          currPlayer={currPlayer}
+          game={game}
+        />
+      );
+    }
+
+    return (
+      <div>
+        <div>{this.state.timer}</div>
+        {GameComponent}
+      </div>
+    );
+  }
 }
 
-export default Game
+export default Game;
