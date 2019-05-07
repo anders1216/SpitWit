@@ -20,17 +20,20 @@ import Player from '../components/Player'
 //
 // The shape of the data being passed between host and server from the GamesChannel:
 // {
-//   timer: number             # seconds remaining for this round
-//   is_voting_round: boolean  # true if this voting round false if displaying vote results
-//   round_number: number      # current round number
-//   prompt: string            # the prompt to display for this round
-//   answers: {                # object that maps player to answer
-//	   [player1Id]: string,
-//     [player2Id]: string
-//   },
-//   votes: {                  # object that maps player id to votes
-//	   [player1Id]: number,
-//     [player2Id]: number
+//   timer: number,             # seconds remaining for this round
+//   is_voting_phase: boolean,  # true if this voting round false if displaying vote results
+//   round_number: number,      # current round number
+//   player_prompts: object,    # array of objects mapping player id to assigned prompts
+//   round: {                   # object that contains information for round
+//	   prompt: string,
+//     answers: {               # object that maps player to answer
+//	     [player1Id]: string,
+//       [player2Id]: string
+//     },
+//     votes: {                 # object that maps voter id to answerer id
+//	     [player3Id]: number,
+//       [player4Id]: number
+//     }
 //   }
 // }
 
@@ -40,13 +43,15 @@ class Game extends Component {
 	intervalId
 	state = {
 		currPlayer: null,
-		round_number: 0,
-		timer: 0,
 		players: [],
-		prompt: "",
-		answers: [],
-		votes: [],
-		player_prompts: null
+		player_prompts: null,
+		round_number: 0,
+		is_voting_phase: false,
+		timer: 0,
+		round: {
+			answers: {},
+			votes: {}
+		}
 	}
 
 	// Start subscription after successfully joining game
@@ -72,11 +77,10 @@ class Game extends Component {
 
 	//updating the round number as the game continues.
 	handleReceiveGameUpdate = (game) => {
-		const { timer, prompt, answers, round_number, votes, player_prompts} = game
+		const { timer, round, round_number, player_prompts } = game
 
-		round_number && this.setState({ roundNumber: round_number})
-		player_prompts && this.setState({player_prompts: player_prompts})
-		console.log(player_prompts)
+		round_number && this.setState({ roundNumber: round_number })
+		player_prompts && this.setState({ player_prompts: player_prompts })
 	}
 
 	// Adding new players to players to the players array if they havent been added.
@@ -115,37 +119,42 @@ class Game extends Component {
 				this.setState({ timer: this.state.timer - 1 })
 			}, 1000)
 		})
-		this.gameSub.send({game_id: this.props.game.id,  timer: 90 })
+		this.gameSub.send({ game_id: this.props.game.id, timer: 90 })
 	}
 
 	// passed down to post new anwers to the DB.
 	handleNewAnswer = (answer) => {
-		console.log(this.props.game.id, this.state.round_number)
 		let player_id = this.state.currPlayer.id
 		fetch('http://localhost:3000/answers', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({answer: {
-				text: answer,
-				player_id: player_id,
-				game_id: this.props.game.id,
-				round_number: this.state.round_number
-			}})
+			body: JSON.stringify({
+				answer: {
+					text: answer,
+					player_id: player_id,
+					game_id: this.props.game.id,
+					round_number: this.state.round_number
+				}
+			})
 		})
 	}
 
 	render() {
-		//defining a varible to establish "context" based on all aspects of the context we intend to access later.
-		const { currPlayer, players, prompt, answers, votes, player_prompts} = this.state
+		const { currPlayer, players, round, player_prompts } = this.state
 		const { game } = this.props
-		console.log(player_prompts)
 
-		//conditionally render components based on the current step of the game.
+		// Conditionally render components based on the current state of the game.
 		let GameComponent
-		//set a varaible to be rendered. if the game has started render the answer from, if not render the lobby if the answerforms have been rendered and passed and the timer reaches 0, initiating a round, render round 1.
 		if (this.state.round_number === 0) {
 			if (player_prompts) {
-				GameComponent = <AnswerForm handleSubmit={this.handleNewAnswer} currPlayer={currPlayer} game={game} player_prompts={player_prompts}/>
+				GameComponent = (
+					<AnswerForm
+						handleSubmit={this.handleNewAnswer}
+						currPlayer={currPlayer}
+						game={game}
+						player_prompts={player_prompts}
+					/>
+				)
 			} else {
 				GameComponent = (
 					<Lobby
@@ -154,12 +163,11 @@ class Game extends Component {
 						players={players}
 						currPlayer={currPlayer}
 						game={game}
-
 					/>
 				)
 			}
 		} else {
-			GameComponent = <Round prompt={prompt} answers={answers} votes={votes} currPlayer={currPlayer} game={game} />
+			GameComponent = <Round round={round} currPlayer={currPlayer} game={game} />
 		}
 
 		return <div>{GameComponent}</div>
