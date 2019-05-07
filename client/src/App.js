@@ -7,7 +7,7 @@ class App extends Component {
 	API_URL = 'http://localhost:3000/'
 
 	state = {
-		isHost: false,
+		isHost: true,
 		game: null
 	}
 

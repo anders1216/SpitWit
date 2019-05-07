@@ -3,20 +3,20 @@ class AnswersController < ApplicationController
     @answers = Answer.all
     render json: @answers
   end
- 
-  def create 
+
+  def create
     @answer = Answer.create(
       text: answer_params[:text],
       player_id: answer_params[:player_id],
       round_id: Round.find_by(round_number: answer_params[:round_number], game_id: answer_params[:game_id]).id
     )
-    
+
     render json: @answer
   end
- 
+
   private
- 
+
   def answer_params
-    params.require(:answer).permit!
+    params.require(:answer).permit(:text, :player_id, :round_number, :game_id)
   end
 end

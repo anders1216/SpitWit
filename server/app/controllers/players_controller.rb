@@ -3,10 +3,10 @@ class PlayersController < ApplicationController
     @players = Player.all
     render json: @players
   end
- 
+
   def create
     @player = Player.create(player_params)
-    ActionCable.server.broadcast('players', Player.all)
+    ActionCable.server.broadcast('players', Game.find(player_params[:game_id]).players)
     render json: @player
   end
 
@@ -20,10 +20,10 @@ class PlayersController < ApplicationController
       render json: { errors: @player.errors.full_messages }, status: :unprocessible_entity
     end
   end
-  
+
   private
-  
+
   def player_params
     params.require(:player).permit!
-  end 
+  end
 end
