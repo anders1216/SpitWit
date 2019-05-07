@@ -63,7 +63,7 @@ class Game extends Component {
 				is_host: false
 			}
 		],
-		player_prompts: null,
+		player_prompts: {},
 		round_number: 0,
 		is_voting_phase: false,
 		timer: 0,
@@ -89,16 +89,14 @@ class Game extends Component {
 			received: this.handleReceivePlayersUpdate
 		})
 	}
-	// If the host leaves sends mesage to console. may update later to set an Alert that communicates to non host players the end of game.
+
 	componentWillUnmount() {
 		console.log('disconnected from game.')
 	}
 
-	//updating the round number as the game continues.
 	handleReceiveGameUpdate = (game) => {
 		const { timer, round, round_number, player_prompts, is_voting_phase } = game
 
-		console.log(round_number)
 		round_number && this.setState({ round_number: round_number })
 		player_prompts && this.setState({ player_prompts: player_prompts })
 
@@ -109,12 +107,10 @@ class Game extends Component {
 		}
 	}
 
-	// Adding new players to players to the players array if they havent been added.
 	handleReceivePlayersUpdate = (players) => {
 		this.setState({ players })
 	}
 
-	// Passed down to post new Player to the DB.
 	createNewPlayer = (playerName) => {
 		const { isHost, game } = this.props
 		// localStorage.setItem('currPlayer': player)
@@ -139,7 +135,7 @@ class Game extends Component {
 	}
 
 	startGame = () => {
-		const timeLimit = 5
+		const timeLimit = 7
 		const { is_voting_phase, round_number, timer } = this.state
 
 		this.setState({ timer: timeLimit }, () => {
@@ -166,7 +162,7 @@ class Game extends Component {
 	handleNewAnswer = (answer, num) => {
 		const { currPlayer, player_prompts } = this.state
 		const { apiUrl, game } = this.props
-		console.log(player_prompts[currPlayer.id][num].round_id)
+
 		fetch(apiUrl + 'answers', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -184,6 +180,11 @@ class Game extends Component {
 		this.gameSub.send({ NUKE: true })
 	}
 
+	RESET_ROUND = () => {
+		this.gameSub.send({ game_id: this.props.game.id, round_number: 0, is_voting_phase: false })
+		this.setState({ round_number: 0, is_voting_phase: false })
+	}
+
 	render() {
 		const { currPlayer, players, round, round_number, player_prompts } = this.state
 		const { game } = this.props
@@ -191,7 +192,7 @@ class Game extends Component {
 		// Conditionally render components based on the current state of the game.
 		let GameComponent
 		if (this.state.round_number === 0) {
-			if (player_prompts) {
+			if (Object.keys(player_prompts).length > 0) {
 				GameComponent = (
 					<AnswerForm
 						handleSubmit={this.handleNewAnswer}
@@ -220,6 +221,7 @@ class Game extends Component {
 				<div>{this.state.timer > 0 && this.state.timer}</div>
 				{GameComponent}
 				<br />
+				<button onClick={this.RESET_ROUND}>RESET ROUND</button>
 				<button onClick={this.NUKE}>/!\ NUKE /!\</button>
 			</div>
 		)
