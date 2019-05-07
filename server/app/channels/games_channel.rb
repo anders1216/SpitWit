@@ -17,20 +17,8 @@ class GamesChannel < ApplicationCable::Channel
     # Voting round will be 90 seconds
     # Post-voting round will display vote results for 3 seconds
 
-    if data["timer"] == 90
-      player_prompts = {}
-      prompts = Prompt.all.sample(game.players.length)
-      prompts.each_with_index do |prompt, i|
-        Round.create(prompt_id: prompt.id, round_number: i+1, game_id: game.id)
-        player_prompts[game.players[i].id] ||= []
-        player_prompts[game.players[i].id] << prompt[:question]
-        if(i+1 == prompts.length)
-          player_prompts[game.players[0].id] << prompt[:question]
-        else
-          player_prompts[game.players[i+1].id] ||= []
-          player_prompts[game.players[i+1].id] << prompt[:question]
-        end
-      end
+    if data["round_number"] === 0 && data["timer"] == 90
+      player_prompts = game.create_rounds
       ActionCable.server.broadcast('games', {player_prompts: player_prompts})
     elsif data["timer"] > 0
       # Decrement timer
@@ -39,25 +27,28 @@ class GamesChannel < ApplicationCable::Channel
       })
     elsif data["timer"] == 0
       # Timer hit 0 after voting round, progress to next round
-      if !is_voting_round
+      if !is_voting_phase
         new_round = game.round_number + 1
         game.update!(round_number: new_round)
 
         ActionCable.server.broadcast('games', {
           round_number: new_round,
-          is_voting_round: !data["is_voting_round"],
+          is_voting_phase: !data["is_voting_phase"],
           timer: data["timer"]
         })
       else
         round = game.rounds[game.round_number]
         prompt = round.prompt
         answers = round.answers
-        # Toggle is_voting_round on new round
+        
+        # Toggle is_voting_phase on new round
         ActionCable.server.broadcast('games', {
-          is_voting_round: !data["is_voting_round"],
-          votes: {
-            "#{answers[0].player.id}": answers[0].votes.size,
-            "#{answers[1].player.id}": answers[1].votes.size
+          is_voting_phase: !data["is_voting_phase"],
+          round: {
+            votes: {
+              "#{answers[0].player.id}": answers[0].votes.size,
+              "#{answers[1].player.id}": answers[1].votes.size
+            },
           },
           timer: data["timer"]
         })
