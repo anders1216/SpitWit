@@ -9,7 +9,7 @@ class AnswerForm extends Component {
 	}
 
 	handleSubmit = (input, name) => {
-		this.setState({ [name]: true }, console.log(this.state))
+		this.setState({ [name]: true })
 		this.props.handleSubmit(input, parseInt(name.slice(-1)) - 1)
 	}
 
