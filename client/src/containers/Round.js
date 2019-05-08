@@ -31,7 +31,7 @@ class Round extends Component {
 		return (
 			<div>
 				{is_voting_phase ? 'VOTE' : 'RESULTS'}
-				<Prompt prompt={prompt.question} />
+				<Prompt animated prompt={prompt.question} />
 				<hr />
 				{answers.map((answer) => {
 					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id)

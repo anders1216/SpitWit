@@ -51,29 +51,6 @@ fieldset {
 	border: 1px solid #bbb;
 }
 
-.prompt::before,
-.prompt::after {
-	content: "";
-	position: absolute;
-	height: 95%;
-	width: 99%;
-	background-color: #eee;
-}
-
-.prompt::before {
-	right: 15px;
-	top: 0;
-	transform: rotate(-1deg);
-	z-index: -1;
-}
-
-.prompt::after {
-	top: 5px;
-	right: -5px;
-	transform: rotate(1deg);
-	z-index: -2;
-}
-
 /* ============================== PLAYER ===============================*/
 
 .player {
@@ -85,6 +62,7 @@ fieldset {
 	transition: all .5s ease;
 	letter-spacing: 1px;
 	outline: none;
+	display: flex;
 	flex: 1;
 	box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, .2);
 	border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;

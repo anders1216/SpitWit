@@ -39,7 +39,7 @@ class App extends Component {
 	renderSpitWits = () => {
 		return (
 			<div className='area'>
-				<ul class='circles'>
+				<ul className='circles'>
 					<li>🧠</li>
 					<li>💦</li>
 					<li>🧠</li>
