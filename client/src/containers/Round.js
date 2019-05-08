@@ -15,19 +15,36 @@ class Round extends Component {
 		this.props.handleVote(answer)
 	}
 
+	getPlayerById = (id) => {
+		return this.props.players.find((player) => player.id === id)
+	}
+
+	getVotesForThisAnswer = (answer) => {
+		return this.props.votes.filter((vote) => vote.answer_id === answer.id)
+	}
+
 	render() {
-		const { prompt, answers, votes, handleVote, players } = this.props
+		const { prompt, answers, votes, is_voting_phase, handleVote, players } = this.props
 
 		return (
 			<div>
+				{is_voting_phase ? 'VOTE' : 'RESULTS'}
 				<Prompt prompt={prompt.question} />
 				<hr />
-				<div onClick={() => this.handleVote(answers[0])}>
-					<Answer answer={answers[0].text} votes={votes} />
-				</div>
-				<div onClick={() => this.handleVote(answers[1])}>
-					<Answer answer={answers[1].text} votes={votes} />
-				</div>
+				{answers.map((answer) => {
+					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id).name
+
+					return (
+						<div onClick={() => this.handleVote(answer)}>
+							<Answer
+								answerer={answerer}
+								answer={answer.text}
+								votes={this.getVotesForThisAnswer(answer)}
+								getPlayerById={this.getPlayerById}
+							/>
+						</div>
+					)
+				})}
 			</div>
 		)
 	}
