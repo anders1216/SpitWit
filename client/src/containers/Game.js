@@ -5,6 +5,7 @@ import Lobby from '../components/Lobby'
 import AnswerForm from '../components/forms/AnswerForm'
 import Round from './Round'
 import Player from '../components/Player'
+import Endgame from '../components/Endgame'
 
 // This is the main component that handles subscriptions.
 // The main communication is between the host's client and the server.
@@ -70,7 +71,8 @@ class Game extends Component {
 		round: {
 			answers: {},
 			votes: {}
-		}
+		},
+		has_ended: false
 	}
 
 	// Start subscription after successfully joining game
@@ -96,8 +98,12 @@ class Game extends Component {
 	}
 
 	handleReceiveGameUpdate = (game) => {
-		const { timer, round, round_number, player_prompts, is_voting_phase, test } = game
+		const { timer, round, round_number, player_prompts, is_voting_phase, has_ended, test } = game
 		console.log(game)
+
+		if (has_ended) {
+			this.setState({ has_ended })
+		}
 
 		round_number && this.setState({ round_number: round_number })
 		player_prompts && this.setState({ player_prompts: player_prompts })
@@ -199,12 +205,15 @@ class Game extends Component {
 	}
 
 	render() {
-		const { currPlayer, players, round, round_number, player_prompts, is_voting_phase } = this.state
+		const { currPlayer, players, round, round_number, player_prompts, is_voting_phase, has_ended } = this.state
 		const { game } = this.props
 
 		// Conditionally render components based on the current state of the game.
 		let GameComponent
-		if (this.state.round_number === 0) {
+
+		if (has_ended) {
+			GameComponent = <Endgame players={players} />
+		} else if (this.state.round_number === 0) {
 			if (Object.keys(player_prompts).length > 0) {
 				GameComponent = (
 					<AnswerForm

@@ -12,7 +12,11 @@ class Lobby extends Component {
 				{currPlayer ? (
 					<React.Fragment>
 						{players.map((player, i) => <Player key={i} {...player} />)}
-						{currPlayer.is_host && <button onClick={this.props.handleStartGame}>Start Game</button>}
+						{currPlayer.is_host && (
+							<button onClick={this.props.handleStartGame} disabled>
+								Start Game
+							</button>
+						)}
 					</React.Fragment>
 				) : (
 					<NewPlayerForm handleSubmit={this.props.handleSubmit} />

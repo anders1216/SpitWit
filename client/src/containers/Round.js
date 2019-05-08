@@ -16,10 +16,11 @@ class Round extends Component {
 	}
 
 	render() {
-		const { prompt, answers, votes, handleVote, players } = this.props
+		const { prompt, answers, votes, is_voting_phase, handleVote, players } = this.props
 
 		return (
 			<div>
+				{is_voting_phase ? 'VOTE' : 'RESULTS'}
 				<Prompt prompt={prompt.question} />
 				<hr />
 				<div onClick={() => this.handleVote(answers[0])}>

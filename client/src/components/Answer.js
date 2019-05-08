@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 
-const Answer = props => {
-  return <div>{props.answer}</div>;
-};
+const Answer = (props) => {
+	return <div className='answer'>{props.answer}</div>
+}
 
-export default Answer;
+export default Answer

@@ -60,13 +60,16 @@ class GamesChannel < ApplicationCable::Channel
         prompt: round.prompt,
         answers: round.answers,
       }})
+    elsif game.round_number > game.rounds.size
+      ActionCable.server.broadcast('games', {
+        has_ended: true
+      })
     elsif data["timer"] > 0
       # Decrement timer
       ActionCable.server.broadcast('games', {
         timer: data["timer"]
       })
     elsif data["timer"] == 0
-      #byebug
       # Timer hit 0 after voting round, progress to next round
       if !data["is_voting_phase"]
 
