@@ -145,6 +145,7 @@ class Game extends Component {
 			body: JSON.stringify({
 				name: playerName,
 				game_id: game.id,
+				score: 0,
 				is_host: isHost
 			})
 		})

@@ -19,9 +19,9 @@ class GamesChannel < ApplicationCable::Channel
       Game.delete_all
 
       game = Game.create(id: 1, room_code: "TEST", round_number: 0)
-      Player.create(id: 1, game_id: 1, name: "PLAYER ONE 👑", is_host: true)
-      Player.create(id: 2, game_id: 1, name: "PLAYER TWO", is_host: false)
-      Player.create(id: 3, game_id: 1, name: "PLAYER THREE", is_host: false)
+      Player.create(id: 1, game_id: 1, name: "PLAYER ONE 👑", is_host: true, score: 0)
+      Player.create(id: 2, game_id: 1, name: "PLAYER TWO", is_host: false, score: 0)
+      Player.create(id: 3, game_id: 1, name: "PLAYER THREE", is_host: false, score: 0)
 
       player_prompts = game.create_rounds
       player_prompts.keys.each do |player|
@@ -90,6 +90,7 @@ class GamesChannel < ApplicationCable::Channel
           is_voting_phase: !data["is_voting_phase"],
           votes: votes.flatten
         })
+        ActionCable.server.broadcast('players', game.players)
       end
     end
   end
