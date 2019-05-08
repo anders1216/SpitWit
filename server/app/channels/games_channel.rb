@@ -56,10 +56,10 @@ class GamesChannel < ApplicationCable::Channel
       round = Round.find_by(game_id: game.id, round_number: game.round_number)
 
       # Pass round data to be access in round render
-      ActionCable.server.broadcast('games', {round: {
+      ActionCable.server.broadcast('games', {
         prompt: round.prompt,
         answers: round.answers,
-      }})
+      })
     elsif game.round_number > game.rounds.size
       ActionCable.server.broadcast('games', {
         has_ended: true
@@ -81,7 +81,6 @@ class GamesChannel < ApplicationCable::Channel
           is_voting_phase: !data["is_voting_phase"]
         })
       else
-        # byebug
         round = Round.find_by(game_id: game.id, round_number: game.round_number)
 
         # Toggle is_voting_phase on new round
@@ -89,9 +88,7 @@ class GamesChannel < ApplicationCable::Channel
         ActionCable.server.broadcast('games', {
           round_number: game.round_number,
           is_voting_phase: !data["is_voting_phase"],
-          round: {
-            votes: [round.answers[0].votes, round.answers[1].votes].flatten
-          }
+          votes: [round.answers[0].votes, round.answers[1].votes].flatten
         })
       end
     end

@@ -68,10 +68,9 @@ class Game extends Component {
 		round_number: 0,
 		is_voting_phase: false,
 		timer: 0,
-		round: {
-			answers: {},
-			votes: {}
-		},
+		answers: {},
+		votes: {},
+		prompt: '',
 		has_ended: false
 	}
 
@@ -98,23 +97,23 @@ class Game extends Component {
 	}
 
 	handleReceiveGameUpdate = (game) => {
-		const { timer, round, round_number, player_prompts, is_voting_phase, has_ended, test } = game
+		const { timer, answers, votes, prompt, round_number, player_prompts, is_voting_phase, has_ended, test } = game
+
 		console.log(game)
 
 		if (has_ended) {
 			this.setState({ has_ended })
 		}
 
-		round_number && this.setState({ round_number: round_number })
-		player_prompts && this.setState({ player_prompts: player_prompts })
-		round && this.setState({ round: round })
-		test && this.setCountdown()
-
-		timer !== undefined && this.setState({ timer })
-
 		if (this.state.currPlayer.is_host && round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
 			const newTimer = 8
-			this.setState({ timer: newTimer, is_voting_phase: is_voting_phase })
+			this.setState({
+				timer: newTimer,
+				is_voting_phase: is_voting_phase,
+				prompt: '',
+				answers: [],
+				votes: []
+			})
 
 			this.gameSub.send({
 				game_id: this.props.game.id,
@@ -122,6 +121,14 @@ class Game extends Component {
 				timeLimit: newTimer
 			})
 		}
+
+		round_number && this.setState({ round_number: round_number })
+		player_prompts && this.setState({ player_prompts: player_prompts })
+		answers && this.setState({ answers })
+		votes && this.setState({ votes })
+		prompt && this.setState({ prompt })
+		test && this.setCountdown()
+		timer !== undefined && this.setState({ timer })
 	}
 
 	handleReceivePlayersUpdate = (players) => {
@@ -204,8 +211,22 @@ class Game extends Component {
 		this.gameSub.send({ RESET: true })
 	}
 
+	PAUSE = () => {
+		clearInterval(this.intervalId)
+	}
+
 	render() {
-		const { currPlayer, players, round, round_number, player_prompts, is_voting_phase, has_ended } = this.state
+		const {
+			currPlayer,
+			players,
+			round_number,
+			player_prompts,
+			is_voting_phase,
+			has_ended,
+			answers,
+			votes,
+			prompt
+		} = this.state
 		const { game } = this.props
 
 		// Conditionally render components based on the current state of the game.
@@ -234,14 +255,16 @@ class Game extends Component {
 					/>
 				)
 			}
-		} else if (round.prompt) {
+		} else if (prompt) {
 			GameComponent = (
 				<Round
 					handleVote={this.handleVote}
 					round_number={round_number}
 					players={players}
 					currPlayer={currPlayer}
-					{...round}
+					answers={answers}
+					votes={votes}
+					prompt={prompt}
 					is_voting_phase={is_voting_phase}
 				/>
 			)
@@ -252,6 +275,7 @@ class Game extends Component {
 				<div>{this.state.timer > 0 && this.state.timer}</div>
 				{GameComponent}
 				<br />
+				<button onClick={this.PAUSE}>PAUSE</button>
 				<button onClick={this.RESET}>/!\ RESET /!\</button>
 			</div>
 		)
