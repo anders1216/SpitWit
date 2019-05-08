@@ -1,9 +1,13 @@
 body {
 	font-family: 'Viga', sans-serif;
+	color: white;
+	background-color: #380d05;
 }
 
 .App {
 	text-align: center;
+	display: flex;
+	justify-content: center;
 }
 
 .App-logo {
@@ -36,7 +40,20 @@ body {
 	}
 }
 
+input {
+	background-color: white;
+	min-width: 200px;
+}
+
+/* =================== GAME ========================== */
+.game {
+	margin-top: 10%;
+}
+
+/* ================== PROMPT ========================= */
+
 .prompt {
+	color: black;
 	background: #fff;
 	padding: 30px;
 	position: relative;
@@ -73,7 +90,201 @@ body {
 	z-index: -2;
 }
 
+/* ============================== PLAYER ===============================*/
+
+.player {
+	text-align: center;
+	align-self: center;
+	background: transparent;
+	padding: 1rem 1rem;
+	margin: 0 1rem;
+	transition: all .5s ease;
+	letter-spacing: 1px;
+	outline: none;
+	flex: 1;
+	box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, .2);
+	border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+	border: solid 5px black;
+	max-width: 250px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.player.vote {
+	padding: 0.1rem 0.1rem;
+	font-size: 0.75em;
+	width: 100px;
+}
+
+.red {
+	background-color: #9b1b30;
+}
+
+.orange {
+	background-color: #f96714;
+}
+
+.yellow {
+	background-color: #d8b43e;
+}
+
+.green {
+	background-color: #264e36;
+}
+
+.teal {
+	background-color: #00a591;
+}
+
+.blue {
+	background-color: #00539c;
+}
+
+.purple {
+	background-color: #6b5b95;
+}
+
+.pink {
+	background-color: #ce3175;
+}
+
+/* ===================== ANSWER ========================= */
 .answer {
 	border: 2px solid black;
 	cursor: pointer;
+}
+
+.player-votes {
+	display: flex;
+	justify-content: center;
+	flex-flow: row wrap;
+	width: 400px;
+}
+
+.answer .player {
+	min-width: 100px;
+	max-width: 100px;
+	margin: 0;
+}
+
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+.context {
+	width: 100%;
+	position: absolute;
+	top: 50vh;
+}
+
+.context h1 {
+	text-align: center;
+	color: #fff;
+	font-size: 50px;
+}
+
+.area {
+	background-image: linear-gradient(90deg, #380d05 0%, #5f170c 25%, #6b1c0f 50%, #61160a 75%, #360a04 100%);
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	z-index: -1;
+}
+
+.circles {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.circles li {
+	position: absolute;
+	display: block;
+	list-style: none;
+	animation: animate 25s linear infinite;
+	bottom: -150px;
+}
+
+.circles li:nth-child(1) {
+	left: 25%;
+	font-size: 5.25em;
+	animation-delay: 0s;
+}
+
+.circles li:nth-child(2) {
+	left: 10%;
+	font-size: 4.5em;
+	animation-delay: 2s;
+	animation-duration: 12s;
+}
+
+.circles li:nth-child(3) {
+	left: 70%;
+	font-size: 4.75em;
+	animation-delay: 4s;
+}
+
+.circles li:nth-child(4) {
+	left: 40%;
+	font-size: 7em;
+	animation-delay: 0s;
+	animation-duration: 18s;
+}
+
+.circles li:nth-child(5) {
+	left: 65%;
+	font-size: 3.25em;
+	animation-delay: 0s;
+}
+
+.circles li:nth-child(6) {
+	left: 75%;
+	font-size: 6.5em;
+	animation-delay: 3s;
+}
+
+.circles li:nth-child(7) {
+	left: 35%;
+	font-size: 3.75em;
+	animation-delay: 7s;
+}
+
+.circles li:nth-child(8) {
+	left: 50%;
+	font-size: 7em;
+	animation-delay: 15s;
+	animation-duration: 45s;
+}
+
+.circles li:nth-child(9) {
+	left: 20%;
+	font-size: 6.25em;
+	animation-delay: 2s;
+	animation-duration: 35s;
+}
+
+.circles li:nth-child(10) {
+	left: 85%;
+	font-size: 5em;
+	animation-delay: 0s;
+	animation-duration: 11s;
+}
+
+@keyframes animate {
+	0% {
+		transform: translateY(0) rotate(0deg);
+		opacity: 0.5;
+		border-radius: 0;
+	}
+
+	100% {
+		transform: translateY(-1000px) rotate(720deg);
+		opacity: 0;
+		border-radius: 50%;
+	}
 }

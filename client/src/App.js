@@ -40,7 +40,7 @@ class App extends Component {
 		const { game, isHost } = this.state
 
 		return (
-			<div>
+			<div className='App'>
 				{game ? (
 					<Game game={game} isHost={isHost} apiUrl={this.API_URL} />
 				) : (
@@ -49,6 +49,20 @@ class App extends Component {
 						handleCreateNewGame={this.handleCreateNewGame}
 					/>
 				)}
+				<div className='area'>
+					<ul class='circles'>
+						<li>🧠</li>
+						<li>💦</li>
+						<li>🧠</li>
+						<li>🧠</li>
+						<li>🧠</li>
+						<li>💦</li>
+						<li>🧠</li>
+						<li>🧠</li>
+						<li>🧠</li>
+						<li>💦</li>
+					</ul>
+				</div>
 			</div>
 		)
 	}

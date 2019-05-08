@@ -166,7 +166,7 @@ class Game extends Component {
 	}
 
 	startGame = () => {
-		const timeLimit = 15
+		const timeLimit = 45
 		const { is_voting_phase, round_number, timer } = this.state
 
 		this.setState({ timer: timeLimit }, this.setCountdown)
@@ -272,7 +272,7 @@ class Game extends Component {
 		}
 
 		return (
-			<div>
+			<div className='game'>
 				<div>{this.state.timer > 0 && this.state.timer}</div>
 				{GameComponent}
 				<br />

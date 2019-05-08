@@ -39,6 +39,7 @@ class Round extends Component {
 							<Answer
 								answerer={answerer}
 								answer={answer.text}
+								players={players}
 								votes={this.getVotesForThisAnswer(answer)}
 								getPlayerById={this.getPlayerById}
 							/>

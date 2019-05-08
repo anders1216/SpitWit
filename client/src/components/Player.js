@@ -1,7 +1,9 @@
 import React from 'react'
 
+const colors = [ 'red', 'yellow', 'orange', 'green', 'teal', 'blue', 'purple', 'pink' ]
+
 const Player = (props) => {
-	return <div className='player'>{props.name}</div>
+	return <div className={`player ${colors[props.i]} ${props.isVote && 'vote'}`}>{props.name}</div>
 }
 
 export default Player
