@@ -82,13 +82,13 @@ class GamesChannel < ApplicationCable::Channel
         })
       else
         round = Round.find_by(game_id: game.id, round_number: game.round_number)
-
+        votes = round.answers.map {|answer| answer.votes}
         # Toggle is_voting_phase on new round
 
         ActionCable.server.broadcast('games', {
           round_number: game.round_number,
           is_voting_phase: !data["is_voting_phase"],
-          votes: [round.answers[0].votes, round.answers[1].votes].flatten
+          votes: votes.flatten
         })
       end
     end
