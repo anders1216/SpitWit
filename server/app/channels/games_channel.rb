@@ -13,60 +13,68 @@ class GamesChannel < ApplicationCable::Channel
       Round.delete_all
       Answer.delete_all
       Player.delete_all
-
-      while Game.last && Game.first != Game.last
-        Game.last.delete
-      end
+      Game.delete_all
+      # while Game.last && Game.first != Game.last
+      #   Game.last.delete
+      # end
 
       Game.find_or_create_by!(id: 1, room_code: "TEST", round_number: 0)
-      Player.create(id: 1, game_id: 1, name: "PLAYER ONE 👑", is_host: true) 
-      Player.create(id: 2, game_id: 1, name: "PLAYER TWO", is_host: false)   
-      Player.create(id: 3, game_id: 1, name: "PLAYER THREE", is_host: false)   
+      Player.create(id: 1, game_id: 1, name: "PLAYER ONE 👑", is_host: true)
+      # Player.create(id: 2, game_id: 1, name: "PLAYER TWO", is_host: false)
+      # Player.create(id: 3, game_id: 1, name: "PLAYER THREE", is_host: false)
       return
     end
 
     game = Game.find(data["game_id"])
-
+    if(data["round_number"])
+      game.update(round_number: 0)
+      return
+    end
     # There are two timers for the voting round and post-voting round
     # All timers will be updated/ticked-down by the host's client
     # New rounds start in voting mode, then switch to post-voting when that timer hits 0
     # Voting round will be 90 seconds
     # Post-voting round will display vote results for 3 seconds
-
     if game.round_number == 0 && data["timer"] == data["timeLimit"]
       player_prompts = game.create_rounds
       ActionCable.server.broadcast('games', {player_prompts: player_prompts})
+    elsif game.round_number > 0 && data["timer"] == data["timeLimit"]
+      round = Round.find_by(game_id: game.id, round_number: game.round_number)
+
+      # Pass round data to be access in round render
+      ActionCable.server.broadcast('games', {round: {
+        prompt: round.prompt,
+        answers: round.answers
+      }})
     elsif data["timer"] > 0
       # Decrement timer
       ActionCable.server.broadcast('games', {
         timer: data["timer"]
       })
     elsif data["timer"] == 0
+      #byebug
       # Timer hit 0 after voting round, progress to next round
       if !data["is_voting_phase"]
+
         new_round = game.round_number + 1
         game.update!(round_number: new_round)
 
         ActionCable.server.broadcast('games', {
           round_number: new_round,
-          is_voting_phase: !data["is_voting_phase"],
-          timer: data["timeLimit"]
+          is_voting_phase: !data["is_voting_phase"]
         })
       else
-        round = game.rounds[game.round_number]
-        prompt = round.prompt
-        answers = round.answers
+        # byebug
+        round = Round.find_by(game_id: game.id, round_number: game.round_number)
 
         # Toggle is_voting_phase on new round
+
         ActionCable.server.broadcast('games', {
+          round_number: game.round_number,
           is_voting_phase: !data["is_voting_phase"],
           round: {
-            votes: {
-              "#{answers[0].player.id}": answers[0].votes.size,
-              "#{answers[1].player.id}": answers[1].votes.size
-            },
-          },
-          timer: data["timer"]
+            votes: [round.answers[0].votes, round.answers[1].votes].flatten
+          }
         })
       end
     end
