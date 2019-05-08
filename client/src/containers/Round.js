@@ -4,6 +4,8 @@ import Answer from '../components/Answer'
 import Prompt from '../components/Prompt'
 
 class Round extends Component {
+	colors = [ 'red', 'yellow', 'orange', 'green', 'teal', 'blue', 'purple', 'pink' ]
+
 	state = {
 		votedFor: null
 	}
@@ -32,7 +34,7 @@ class Round extends Component {
 				<Prompt prompt={prompt.question} />
 				<hr />
 				{answers.map((answer) => {
-					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id).name
+					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id)
 
 					return (
 						<div onClick={() => this.handleVote(answer)}>

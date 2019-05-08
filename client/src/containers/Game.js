@@ -132,7 +132,8 @@ class Game extends Component {
 	}
 
 	handleReceivePlayersUpdate = (players) => {
-		this.setState({ players })
+		// Sort players by their id
+		this.setState({ players: players.sort((p1, p2) => p1.id - p2.id) })
 	}
 
 	createNewPlayer = (playerName) => {
@@ -166,7 +167,7 @@ class Game extends Component {
 	}
 
 	startGame = () => {
-		const timeLimit = 45
+		const timeLimit = 15
 		const { is_voting_phase, round_number, timer } = this.state
 
 		this.setState({ timer: timeLimit }, this.setCountdown)

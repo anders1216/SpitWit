@@ -4,8 +4,10 @@ import Player from '../components/Player'
 const Answer = (props) => {
 	return (
 		<div className='answer'>
-			{props.answerer && <p>{props.answerer}</p>}
+			{props.answerer && <Player isAnswerer i={props.players.indexOf(props.answerer)} {...props.answerer} />}
+
 			<h2>{props.answer}</h2>
+
 			<div className='player-votes'>
 				{props.votes.length > 0 &&
 					props.votes.map((vote) => (

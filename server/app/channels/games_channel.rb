@@ -38,7 +38,7 @@ class GamesChannel < ApplicationCable::Channel
           ) 
         end
       end
-      ActionCable.server.broadcast('games', {player_prompts: player_prompts, timer: 45, test: true})
+      ActionCable.server.broadcast('games', {player_prompts: player_prompts, timer: 15, test: true})
       return
     end
 

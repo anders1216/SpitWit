@@ -8,27 +8,7 @@ body {
 	text-align: center;
 	display: flex;
 	justify-content: center;
-}
-
-.App-logo {
-	animation: App-logo-spin infinite 20s linear;
-	height: 40vmin;
-	pointer-events: none;
-}
-
-.App-header {
-	background-color: #282c34;
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	font-size: calc(10px + 2vmin);
-	color: white;
-}
-
-.App-link {
-	color: #61dafb;
+	width: 100vw;
 }
 
 @keyframes App-logo-spin {
@@ -43,6 +23,10 @@ body {
 input {
 	background-color: white;
 	min-width: 200px;
+}
+
+fieldset {
+	border: none;
 }
 
 /* =================== GAME ========================== */
@@ -96,7 +80,7 @@ input {
 	text-align: center;
 	align-self: center;
 	background: transparent;
-	padding: 1rem 1rem;
+	padding: .5rem .5em;
 	margin: 0 1rem;
 	transition: all .5s ease;
 	letter-spacing: 1px;
@@ -151,12 +135,18 @@ input {
 
 /* ===================== ANSWER ========================= */
 .answer {
+	margin: 3em;
+	padding: 0em;
 	border: 2px solid black;
 	cursor: pointer;
+	background-color: black;
 }
 
 .player-votes {
 	display: flex;
+	position: relative;
+	margin: 0 auto;
+	top: 1em;
 	justify-content: center;
 	flex-flow: row wrap;
 	width: 400px;
@@ -166,6 +156,12 @@ input {
 	min-width: 100px;
 	max-width: 100px;
 	margin: 0;
+}
+
+.answer .answerer {
+	position: relative;
+	margin: 0 auto;
+	top: -1em;
 }
 
 * {
@@ -185,6 +181,7 @@ input {
 	font-size: 50px;
 }
 
+/* ============================== FOR FLOATING BRAIN AND SPLURT EMOJIS ============================= */
 .area {
 	background-image: linear-gradient(90deg, #380d05 0%, #5f170c 25%, #6b1c0f 50%, #61160a 75%, #360a04 100%);
 	width: 100vw;
