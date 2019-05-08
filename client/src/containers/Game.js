@@ -92,22 +92,24 @@ class Game extends Component {
 
 	componentWillUnmount() {
 		console.log('disconnected from game.')
+		clearInterval(this.intervalId)
 	}
 
 	handleReceiveGameUpdate = (game) => {
 		const { timer, round, round_number, player_prompts, is_voting_phase, test } = game
-		console.log(game, is_voting_phase, this.state.is_voting_phase)
+		console.log(game)
 
 		round_number && this.setState({ round_number: round_number })
 		player_prompts && this.setState({ player_prompts: player_prompts })
 		round && this.setState({ round: round })
 		test && this.setCountdown()
 
-		this.setState({ timer })
+		timer !== undefined && this.setState({ timer })
 
-		if (round_number > 0 && is_voting_phase != null && is_voting_phase != this.state.is_voting_phase) {
-			const newTimer = 5
-			this.setState({ is_voting_phase: is_voting_phase })
+		if (this.state.currPlayer.is_host && round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
+			const newTimer = 8
+			this.setState({ timer: newTimer, is_voting_phase: is_voting_phase })
+
 			this.gameSub.send({
 				game_id: this.props.game.id,
 				timer: newTimer,
@@ -137,10 +139,6 @@ class Game extends Component {
 			.then((player) => {
 				this.setState({ currPlayer: player })
 			})
-	}
-
-	renderJoinedPlayers() {
-		return <div>{this.state.players.map((player) => <Player {...player} />)}</div>
 	}
 
 	setCountdown = () => {
@@ -196,8 +194,8 @@ class Game extends Component {
 		})
 	}
 
-	NUKE = () => {
-		this.gameSub.send({ NUKE: true })
+	RESET = () => {
+		this.gameSub.send({ RESET: true })
 	}
 
 	render() {
@@ -207,7 +205,6 @@ class Game extends Component {
 		// Conditionally render components based on the current state of the game.
 		let GameComponent
 		if (this.state.round_number === 0) {
-			console.log(this.state.round_number, player_prompts)
 			if (Object.keys(player_prompts).length > 0) {
 				GameComponent = (
 					<AnswerForm
@@ -246,7 +243,7 @@ class Game extends Component {
 				<div>{this.state.timer > 0 && this.state.timer}</div>
 				{GameComponent}
 				<br />
-				<button onClick={this.NUKE}>/!\ NUKE /!\</button>
+				<button onClick={this.RESET}>/!\ RESET /!\</button>
 			</div>
 		)
 	}

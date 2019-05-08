@@ -12,7 +12,7 @@ class GamesChannel < ApplicationCable::Channel
 
   def receive(data)
     # A way to re-seed database from client
-    if data["NUKE"]
+    if data["RESET"]
       Round.delete_all
       Answer.delete_all
       Player.delete_all
@@ -58,7 +58,7 @@ class GamesChannel < ApplicationCable::Channel
       # Pass round data to be access in round render
       ActionCable.server.broadcast('games', {round: {
         prompt: round.prompt,
-        answers: round.answers
+        answers: round.answers,
       }})
     elsif data["timer"] > 0
       # Decrement timer
