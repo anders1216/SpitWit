@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_184414) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-  
+
   create_table "prompts", force: :cascade do |t|
     t.string "question"
     t.datetime "created_at", null: false
