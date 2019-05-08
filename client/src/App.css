@@ -22,7 +22,7 @@ body {
 
 input {
 	background-color: white;
-	min-width: 200px;
+	min-width: 300px;
 }
 
 fieldset {
@@ -55,18 +55,14 @@ fieldset {
 
 .player {
 	text-align: center;
-	align-self: center;
 	background: transparent;
 	padding: .5rem .5em;
-	margin: 0 1rem;
-	transition: all .5s ease;
+	margin: .5rem .5rem;
 	letter-spacing: 1px;
 	outline: none;
-	display: flex;
-	flex: 1;
 	box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, .2);
 	border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-	border: solid 5px black;
+	border: solid 4px black;
 	max-width: 250px;
 	white-space: nowrap;
 	overflow: hidden;
@@ -140,6 +136,14 @@ fieldset {
 	position: relative;
 	margin: 0 auto;
 	top: -1em;
+	max-width: initial;
+	display: flex;
+	justify-content: center;
+}
+
+.voted {
+	background-color: white;
+	color: black;
 }
 
 * {
@@ -263,3 +267,5 @@ fieldset {
 		border-radius: 50%;
 	}
 }
+
+/* ================== INPUT ======================= */

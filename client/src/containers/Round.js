@@ -35,10 +35,11 @@ class Round extends Component {
 				<hr />
 				{answers.map((answer) => {
 					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id)
-
+					console.log(answer)
 					return (
 						<div onClick={() => this.handleVote(answer)}>
 							<Answer
+								voted={this.state.votedFor && this.state.votedFor === answer}
 								answerer={answerer}
 								answer={answer.text}
 								players={players}
