@@ -1,9 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from "react";
 
-const Answer = (props) => {
-  return(
-    console.log("Answer")
-  )
-}
+const Answer = props => {
+  return <div>{props.answer}</div>;
+};
 
-export default Answer
+export default Answer;
