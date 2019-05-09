@@ -169,7 +169,7 @@ class Game extends Component {
 	}
 
 	startGame = () => {
-		const timeLimit = 80
+		const timeLimit = 90
 		const { is_voting_phase } = this.state
 
 		this.setState({ timer: timeLimit }, this.setCountdown)
