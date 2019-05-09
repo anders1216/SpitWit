@@ -6,7 +6,7 @@ class PlayersController < ApplicationController
 
   def create
     game = Game.find(player_params[:game_id])
-    return if Game.players.size == 8 # Max number of players
+    return if game.players.size == 8 # Max number of players
 
     @player = Player.create(player_params)
 

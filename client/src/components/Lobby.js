@@ -15,7 +15,10 @@ class Lobby extends Component {
 					<React.Fragment>
 						{players.map((player, i) => <Player key={i} i={players.indexOf(player)} {...player} />)}
 						{currPlayer.is_host && (
-							<button onClick={this.props.handleStartGame} disabled>
+							<button
+								title='aleast 3 players required to start game.'
+								onClick={this.props.handleStartGame}
+								disabled={players.length < 3}>
 								Start Game
 							</button>
 						)}

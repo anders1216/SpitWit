@@ -7,12 +7,8 @@ class App extends Component {
 	API_URL = 'http://localhost:3000/' // 'https://damp-headland-59352.herokuapp.com/'
 
 	state = {
-		isHost: true,
-		game: {
-			id: 1,
-			round_number: 0,
-			room_code: 'TEST'
-		}
+		isHost: false,
+		game: undefined
 	}
 
 	handleEnterGame = (roomCode) => {
@@ -55,15 +51,18 @@ class App extends Component {
 
 		return (
 			<div className='App'>
+				{this.renderSpitWits()}
 				{game ? (
 					<Game game={game} isHost={isHost} apiUrl={this.API_URL} />
 				) : (
-					<NewGameForm
-						handleEnterGame={this.handleEnterGame}
-						handleCreateNewGame={this.handleCreateNewGame}
-					/>
+					<div>
+						<h1 className='heading'>SpitWit</h1>
+						<NewGameForm
+							handleEnterGame={this.handleEnterGame}
+							handleCreateNewGame={this.handleCreateNewGame}
+						/>
+					</div>
 				)}
-				{this.renderSpitWits()}
 			</div>
 		)
 	}

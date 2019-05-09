@@ -25,54 +25,29 @@ import Endgame from '../components/Endgame'
 //   is_voting_phase: boolean,  # true if this voting round false if displaying vote results
 //   round_number: number,      # current round number
 //   player_prompts: object,    # array of objects mapping player id to assigned prompts
-//   round: {                   # object that contains information for round
-//	   prompt: string,
-//     answers: {               # object that maps player to answer
-//	     [player1Id]: string,
-//       [player2Id]: string
-//     },
-//     votes: {                 # object that maps voter id to answerer id
-//	     [player3Id]: number,
-//       [player4Id]: number
-//     }
-//   }
+//                              # object that contains information for round
+//	 prompt: string,
+//   answers: [               # object that maps player to answer
+//   ],
+//   votes: [            # object that maps voter id to answerer id
+//	 ]
 // }
 export const GameContext = React.createContext()
 
 class Game extends Component {
 	intervalId
 	state = {
-		currPlayer: {
-			id: 1,
-			name: 'PLAYER ONE 👑',
-			is_host: true
-		},
-		players: [
-			{
-				id: 1,
-				name: 'PLAYER ONE 👑',
-				is_host: true
-			},
-			{
-				id: 2,
-				name: 'PLAYER TWO',
-				is_host: false
-			},
-			{
-				id: 3,
-				name: 'PLAYER THREE',
-				is_host: false
-			}
-		],
+		currPlayer: undefined,
+		players: [],
 		player_prompts: {},
 		round_number: 0,
 		is_voting_phase: false,
-		timer: 0,
-		answers: {},
-		votes: {},
-		prompt: '',
+		timer: undefined,
+		answers: [],
+		votes: [],
+		prompt: undefined,
 		has_ended: false,
-		best_answer: null,
+		best_answer: undefined,
 		isMuted: false
 	}
 
@@ -115,8 +90,8 @@ class Game extends Component {
 			player_prompts,
 			is_voting_phase,
 			has_ended,
-			best_answer,
-			test
+			best_answer
+			// test
 		} = game
 
 		// console.log(game)
@@ -147,7 +122,7 @@ class Game extends Component {
 		answers && this.setState({ answers })
 		votes && this.setState({ votes })
 		prompt && this.setState({ prompt })
-		test && this.setCountdown()
+		// test && this.setCountdown()
 		timer !== undefined && this.setState({ timer })
 	}
 
@@ -187,8 +162,8 @@ class Game extends Component {
 	}
 
 	startGame = () => {
-		const timeLimit = 15
-		const { is_voting_phase, round_number, timer } = this.state
+		const timeLimit = 120
+		const { is_voting_phase } = this.state
 
 		this.setState({ timer: timeLimit }, this.setCountdown)
 
@@ -240,13 +215,13 @@ class Game extends Component {
 		}
 	}
 
-	RESET = () => {
-		this.gameSub.send({ RESET: true })
-	}
+	// RESET = () => {
+	// 	this.gameSub.send({ RESET: true })
+	// }
 
-	PAUSE = () => {
-		clearInterval(this.intervalId)
-	}
+	// PAUSE = () => {
+	// 	clearInterval(this.intervalId)
+	// }
 
 	render() {
 		const {
@@ -279,8 +254,10 @@ class Game extends Component {
 					<p>Loading Scoreboard...</p>
 				</React.Fragment>
 			)
+			// Game has ended, show final screen
 		} else if (has_ended) {
 			GameComponent = <Endgame players={players} best_answer={best_answer} />
+			// Game started, go to Answers Form
 		} else if (this.state.round_number === 0) {
 			if (Object.keys(player_prompts).length > 0) {
 				GameComponent = (
@@ -291,6 +268,7 @@ class Game extends Component {
 						player_prompts={player_prompts}
 					/>
 				)
+				// Show lobby before starting game / letting players join
 			} else {
 				GameComponent = (
 					<Lobby
@@ -326,9 +304,9 @@ class Game extends Component {
 				<h1>{this.state.timer > 0 && (!hasGameEndedOnClientBeforeServer && !has_ended) && this.state.timer}</h1>
 				<br />
 				{GameComponent}
-				<br />
+				{/* <br />
 				<button onClick={this.PAUSE}>PAUSE</button>
-				<button onClick={this.RESET}>/!\ RESET /!\</button>
+				<button onClick={this.RESET}>/!\ RESET /!\</button> */}
 			</div>
 		)
 	}
