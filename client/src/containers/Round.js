@@ -58,7 +58,9 @@ class Round extends Component {
 	hasAnsweredThisRound = () => {
 		const { player_prompts, currPlayer, round_number } = this.props
 
-		return player_prompts[currPlayer.id].some((r) => r.round_number === round_number)
+		return (
+			player_prompts[currPlayer.id] && player_prompts[currPlayer.id].some((r) => r.round_number === round_number)
+		)
 	}
 
 	render() {
