@@ -10,7 +10,7 @@ class GamesController < ApplicationController
       round_number: 0
     }
 
-    @game = Game.create(init)
+    @game = Game.create!(init)
     render json: @game
   end
 
