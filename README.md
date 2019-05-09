@@ -2,7 +2,7 @@
 
 _Welcome to SpitWit! A Quiplash™ clone!_
 
-Have laugh with up to 8 players as you spit your wit in a head-to-head battle of
+Have a laugh with up to 8 players as you spit your wit in a head-to-head battle of
 quirky, comedic fun!
 
 **INSTRUCTIONS**
