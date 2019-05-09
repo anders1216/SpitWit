@@ -55,23 +55,23 @@ class Game extends Component {
 	// Start subscription after successfully joining game
 	componentDidMount() {
 		const cableUrl = this.props.apiUrl.replace(/(https|http)/g, 'ws') + 'cable'
-		const cable = ActionCable.createConsumer(cableUrl)
+		this.cable = ActionCable.createConsumer(cableUrl)
 
 		// Game subscription
-		this.gameSub = cable.subscriptions.create('GamesChannel', {
+		this.gameSub = this.cable.subscriptions.create('GamesChannel', {
 			connected: () => console.log('connected to game.'),
 			received: this.handleReceiveGameUpdate
 		})
 
 		// Player subscription
-		this.playerSub = cable.subscriptions.create('PlayersChannel', {
+		this.playerSub = this.cable.subscriptions.create('PlayersChannel', {
 			received: this.handleReceivePlayersUpdate
 		})
 
 		// Play theme music
 		this.music = new Audio('audio/sans_theme.mp3')
 		this.music.loop = true
-		this.music.volume = 0.15
+		this.music.volume = 0.4
 		this.music.play()
 	}
 
@@ -99,6 +99,10 @@ class Game extends Component {
 
 		if (has_ended) {
 			this.setState({ has_ended: has_ended, best_answer: best_answer })
+
+			// Stop subscriptions on game end
+			// this.cable.subscriptions.remove(this.gameSub)
+			// this.cable.subscriptions.remove(this.playerSub)
 		}
 
 		if (round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
@@ -111,7 +115,8 @@ class Game extends Component {
 				votes: []
 			})
 
-			this.state.currPlayer.is_host &&
+			this.state.currPlayer &&
+				this.state.currPlayer.is_host &&
 				this.gameSub.send({
 					game_id: this.props.game.id,
 					timer: newTimer,
@@ -134,7 +139,7 @@ class Game extends Component {
 	}
 
 	createNewPlayer = (playerName) => {
-		const { isHost, game } = this.props
+		const { is_host, game } = this.props
 		// localStorage.setItem('currPlayer': player)
 
 		fetch(this.props.apiUrl + 'players', {
@@ -144,7 +149,7 @@ class Game extends Component {
 				name: playerName,
 				game_id: game.id,
 				score: 0,
-				is_host: isHost
+				is_host: is_host
 			})
 		})
 			.then((res) => res.json())
@@ -164,7 +169,7 @@ class Game extends Component {
 	}
 
 	startGame = () => {
-		const timeLimit = 90
+		const timeLimit = 80
 		const { is_voting_phase } = this.state
 
 		this.setState({ timer: timeLimit }, this.setCountdown)
@@ -217,7 +222,16 @@ class Game extends Component {
 		}
 	}
 
+	// Reset everything and go back to home
 	handleBackToMainMenu = () => {
+		this.setState(this.defaultState)
+		this.props.resetGame()
+	}
+
+	// Reset everything but preserve current player
+	handlePlayAgain = () => {
+		const newState = this.defaultState
+		newState['currPlayer'] = this.state.currPlayer
 		this.setState(this.defaultState)
 	}
 
@@ -263,7 +277,12 @@ class Game extends Component {
 			// Game has ended, show final screen
 		} else if (has_ended) {
 			GameComponent = (
-				<Endgame players={players} best_answer={best_answer} handleBackToMainMenu={this.handleBackToMainMenu} />
+				<Endgame
+					players={players}
+					best_answer={best_answer}
+					handleBackToMainMenu={this.handleBackToMainMenu}
+					handlePlayAgain={this.handlePlayAgain}
+				/>
 			)
 			// Game started, go to Answers Form
 		} else if (this.state.round_number === 0) {
@@ -298,6 +317,7 @@ class Game extends Component {
 					answers={answers}
 					votes={votes}
 					prompt={prompt}
+					player_prompts={player_prompts}
 					is_voting_phase={is_voting_phase}
 					isMuted={isMuted}
 				/>

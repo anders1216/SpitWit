@@ -13,25 +13,27 @@ class Form extends Component {
 	}
 
 	render() {
+		const { disabled, name, buttonName, children, placeholder } = this.props
+
 		return (
 			<div>
 				<form onSubmit={this.handleSubmit}>
-					<fieldset disabled={this.props.disabled}>
+					<fieldset disabled={disabled}>
 						<input
-							style={this.props.disabled ? { opacity: 0.5 } : {}}
+							style={disabled ? { opacity: 0.5 } : {}}
 							className='input'
-							name={this.props.name}
+							name={name}
 							type='text'
 							onChange={this.handleChange}
 							value={this.state.value}
-							placeholder={this.props.placeholder}
+							placeholder={placeholder}
 						/>
-						<button style={this.props.disabled ? { opacity: 0.5 } : {}} type='submit'>
-							Submit{' '}
+						<button style={disabled ? { opacity: 0.5 } : {}} type='submit'>
+							{buttonName ? buttonName : 'submit'}
 						</button>
 					</fieldset>
 				</form>
-				{this.props.children}
+				{children}
 			</div>
 		)
 	}
