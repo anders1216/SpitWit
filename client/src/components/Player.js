@@ -4,7 +4,9 @@ const colors = [ 'red', 'yellow', 'orange', 'green', 'teal', 'blue', 'purple', '
 
 const Player = (props) => {
 	return (
-		<div className={`player ${colors[props.i]} ${props.isVote && 'vote'} ${props.isAnswerer && 'answerer'}`}>
+		<div
+			className={`player ${colors[props.i]} ${props.isVote && 'vote animated tada'} ${props.isAnswerer &&
+				'answerer'}`}>
 			{props.name}
 		</div>
 	)

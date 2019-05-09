@@ -30,16 +30,17 @@ class Round extends Component {
 
 		return (
 			<div>
-				{is_voting_phase ? 'VOTE' : 'RESULTS'}
-				<Prompt animated prompt={prompt.question} />
-				<hr />
-				{answers.map((answer) => {
+				<h1>{is_voting_phase ? 'VOTE!' : 'RESULTS'}</h1>
+				<br />
+				<Prompt animated={is_voting_phase} prompt={prompt.question} />
+				{answers.map((answer, i) => {
 					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id)
-					console.log(answer)
+
 					return (
 						<div onClick={() => this.handleVote(answer)}>
 							<Answer
-								voted={this.state.votedFor && this.state.votedFor === answer}
+								className={is_voting_phase ? `animated fadeIn delay-${i + 1}s` : ''}
+								voted={is_voting_phase && this.state.votedFor && this.state.votedFor === answer}
 								answerer={answerer}
 								answer={answer.text}
 								players={players}

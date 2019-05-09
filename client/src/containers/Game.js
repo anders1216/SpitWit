@@ -231,10 +231,15 @@ class Game extends Component {
 		} = this.state
 		const { game } = this.props
 
+		const hasGameEndedOnClientBeforeServer = !has_ended && round_number > Object.keys(player_prompts).length
+
 		// Conditionally render components based on the current state of the game.
 		let GameComponent
 
-		if (has_ended) {
+		// Game ended but haven't recieved it from server yet so show loading
+		if (hasGameEndedOnClientBeforeServer) {
+			GameComponent = <div class='loader'>🧠s</div>
+		} else if (has_ended) {
 			GameComponent = <Endgame players={players} />
 		} else if (this.state.round_number === 0) {
 			if (Object.keys(player_prompts).length > 0) {
@@ -274,7 +279,8 @@ class Game extends Component {
 
 		return (
 			<div className='game'>
-				<div>{this.state.timer > 0 && this.state.timer}</div>
+				<h2>{this.state.timer > 0 && (!hasGameEndedOnClientBeforeServer && !has_ended) && this.state.timer}</h2>
+				<br />
 				{GameComponent}
 				<br />
 				<button onClick={this.PAUSE}>PAUSE</button>

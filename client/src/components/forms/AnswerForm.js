@@ -28,6 +28,7 @@ class AnswerForm extends Component {
 					handleSubmit={this.handleSubmit}
 					placeholder={'enter answer here'}
 				/>
+				<br />
 				<Prompt prompt={prompts[1].prompt} isForm />
 				<Form
 					name={'answer2'}

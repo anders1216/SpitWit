@@ -3,7 +3,7 @@ import Player from '../components/Player'
 
 const Answer = (props) => {
 	return (
-		<div className={`answer ${props.voted && 'voted'}`}>
+		<div className={`answer ${props.voted && 'voted'} ` + props.className}>
 			{props.answerer && <Player isAnswerer i={props.players.indexOf(props.answerer)} {...props.answerer} />}
 
 			<h2>{props.answer}</h2>
