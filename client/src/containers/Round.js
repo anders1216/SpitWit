@@ -11,8 +11,8 @@ class Round extends Component {
 	}
 
 	componentDidMount() {
-		const { is_voting_phase, prompt, answers } = this.props
-		if (!is_voting_phase) return
+		const { is_voting_phase, prompt, answers, isMuted } = this.props
+		if (!is_voting_phase || isMuted) return
 
 		// Fetching voices is async so we check until we get it
 		var timer = setInterval(() => {

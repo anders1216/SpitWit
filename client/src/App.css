@@ -73,6 +73,12 @@ td {
 	overflow-x: hidden;
 }
 
+.mute {
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
 /* ================== PROMPT ========================= */
 
 .prompt {

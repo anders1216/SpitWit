@@ -72,7 +72,8 @@ class Game extends Component {
 		votes: {},
 		prompt: '',
 		has_ended: false,
-		bestAnswer: null
+		bestAnswer: null,
+		isMuted: false
 	}
 
 	// Start subscription after successfully joining game
@@ -100,7 +101,7 @@ class Game extends Component {
 
 	componentWillUnmount() {
 		console.log('disconnected from game.')
-		this.music.stop()
+		this.music.pause()
 		clearInterval(this.intervalId)
 	}
 
@@ -217,6 +218,17 @@ class Game extends Component {
 		})
 	}
 
+	handleToggleMute = () => {
+		const newVal = !this.state.isMuted
+		this.setState({ isMuted: newVal })
+
+		if (!newVal) {
+			this.music.play()
+		} else {
+			this.music.pause()
+		}
+	}
+
 	RESET = () => {
 		this.gameSub.send({ RESET: true })
 	}
@@ -235,7 +247,8 @@ class Game extends Component {
 			has_ended,
 			answers,
 			votes,
-			prompt
+			prompt,
+			isMuted
 		} = this.state
 		const { game } = this.props
 
@@ -288,12 +301,16 @@ class Game extends Component {
 					votes={votes}
 					prompt={prompt}
 					is_voting_phase={is_voting_phase}
+					isMuted={isMuted}
 				/>
 			)
 		}
 
 		return (
 			<div className='game'>
+				<a style={isMuted ? { opacity: 1 } : { opacity: 0.5 }} onClick={this.handleToggleMute} className='mute'>
+					MUTE
+				</a>
 				<h2>{this.state.timer > 0 && (!hasGameEndedOnClientBeforeServer && !has_ended) && this.state.timer}</h2>
 				<br />
 				{GameComponent}
