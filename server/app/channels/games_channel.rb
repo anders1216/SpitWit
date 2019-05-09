@@ -57,11 +57,15 @@ class GamesChannel < ApplicationCable::Channel
         prompt: round.prompt,
         answers: round.answers,
       })
+      # END GAME
     elsif game.round_number > game.rounds.size
       ActionCable.server.broadcast('games', {
         has_ended: true,
         best_answer: game.get_best_answer
       })
+
+      # Delete everything for game
+      game.destroy_all
     elsif data["timer"] > 0
       # Decrement timer
       ActionCable.server.broadcast('games', {

@@ -12,17 +12,18 @@ class Game < ApplicationRecord
     round_numbers = (1..total_rounds).to_a.shuffle
 
     prompts.each_with_index do |prompt, i|
-      round = Round.create!(prompt_id: prompt.id, round_number: round_numbers[i], game_id: self.id)
+      round_number = round_numbers[i]
+      round = Round.create!(prompt_id: prompt.id, round_number: round_number, game_id: self.id)
       i -= self.players.size if i > self.players.size - 1
 
       player_prompts[self.players[i].id] ||= []
-      player_prompts[self.players[i].id] << {prompt: prompt[:question], round_id: round.id}
+      player_prompts[self.players[i].id] << {prompt: prompt[:question], round_number: round_number, round_id: round.id}
 
       if(i+1 == prompts.length/2)
-        player_prompts[self.players[0].id] << {prompt: prompt[:question], round_id: round.id}
+        player_prompts[self.players[0].id] << {prompt: prompt[:question], round_number: round_number, round_id: round.id}
       else
         player_prompts[self.players[i+1].id] ||= []
-        player_prompts[self.players[i+1].id] << {prompt: prompt[:question], round_id: round.id}
+        player_prompts[self.players[i+1].id] << {prompt: prompt[:question], round_number: round_number, round_id: round.id}
       end
     end
     
