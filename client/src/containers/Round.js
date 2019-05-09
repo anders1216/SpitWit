@@ -34,6 +34,8 @@ class Round extends Component {
 
 	render() {
 		const { prompt, answers, votes, is_voting_phase, handleVote, players } = this.props
+		let answerSty = 'animated fadeIn'
+		if (!this.hasAnsweredThisRound()) answerSty += ' votable'
 
 		return (
 			<div>
@@ -46,13 +48,7 @@ class Round extends Component {
 					return (
 						<div key={i} onClick={() => this.handleVote(answer)}>
 							<Answer
-								className={
-									is_voting_phase ? (
-										`${!this.hasAnsweredThisRound() && 'votable'} animated fadeIn delay-${i + 1}s`
-									) : (
-										''
-									)
-								}
+								className={answerSty + (is_voting_phase ? ` delay-${i + 1}s` : '')}
 								voted={is_voting_phase && this.state.votedFor && this.state.votedFor === answer}
 								answerer={answerer}
 								answer={answer.text}
