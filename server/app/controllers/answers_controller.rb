@@ -5,11 +5,13 @@ class AnswersController < ApplicationController
   end
 
   def create
-    @answer = Answer.create(
-      text: answer_params[:text],
-      player_id: answer_params[:player_id],
-      round_id: answer_params[:round_id]
-    )
+    if (answer_params[:text] != '')
+      @answer = Answer.create(
+        text: answer_params[:text],
+        player_id: answer_params[:player_id],
+        round_id: answer_params[:round_id]
+      )
+    end
 
     render json: @answer
   end
