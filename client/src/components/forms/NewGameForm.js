@@ -7,7 +7,12 @@ const NewGameForm = (props) => {
 	return (
 		<div>
 			<Form handleSubmit={handleEnterGame} placeholder={'enter room code'}>
-				<button onClick={handleCreateNewGame}>Create New Game</button>
+				<React.Fragment>
+					<br />
+					<h3>OR</h3>
+					<br />
+					<button onClick={handleCreateNewGame}>Create New Game</button>
+				</React.Fragment>
 			</Form>
 		</div>
 	)

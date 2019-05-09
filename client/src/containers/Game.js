@@ -25,54 +25,32 @@ import Endgame from '../components/Endgame'
 //   is_voting_phase: boolean,  # true if this voting round false if displaying vote results
 //   round_number: number,      # current round number
 //   player_prompts: object,    # array of objects mapping player id to assigned prompts
-//   round: {                   # object that contains information for round
-//	   prompt: string,
-//     answers: {               # object that maps player to answer
-//	     [player1Id]: string,
-//       [player2Id]: string
-//     },
-//     votes: {                 # object that maps voter id to answerer id
-//	     [player3Id]: number,
-//       [player4Id]: number
-//     }
-//   }
+//                              # object that contains information for round
+//	 prompt: string,
+//   answers: [               # object that maps player to answer
+//   ],
+//   votes: [            # object that maps voter id to answerer id
+//	 ]
 // }
 export const GameContext = React.createContext()
 
 class Game extends Component {
 	intervalId
-	state = {
-		currPlayer: {
-			id: 1,
-			name: 'PLAYER ONE 👑',
-			is_host: true
-		},
-		players: [
-			{
-				id: 1,
-				name: 'PLAYER ONE 👑',
-				is_host: true
-			},
-			{
-				id: 2,
-				name: 'PLAYER TWO',
-				is_host: false
-			},
-			{
-				id: 3,
-				name: 'PLAYER THREE',
-				is_host: false
-			}
-		],
+	defaultState = {
+		currPlayer: undefined,
+		players: [],
 		player_prompts: {},
 		round_number: 0,
 		is_voting_phase: false,
-		timer: 0,
-		answers: {},
-		votes: {},
-		prompt: '',
-		has_ended: false
+		timer: undefined,
+		answers: [],
+		votes: [],
+		prompt: undefined,
+		has_ended: false,
+		best_answer: undefined,
+		isMuted: false
 	}
+	state = this.defaultState
 
 	// Start subscription after successfully joining game
 	componentDidMount() {
@@ -89,24 +67,42 @@ class Game extends Component {
 		this.playerSub = cable.subscriptions.create('PlayersChannel', {
 			received: this.handleReceivePlayersUpdate
 		})
+
+		// Play theme music
+		this.music = new Audio('audio/sans_theme.mp3')
+		this.music.loop = true
+		this.music.volume = 0.15
+		this.music.play()
 	}
 
 	componentWillUnmount() {
 		console.log('disconnected from game.')
+		this.music.pause()
 		clearInterval(this.intervalId)
 	}
 
 	handleReceiveGameUpdate = (game) => {
-		const { timer, answers, votes, prompt, round_number, player_prompts, is_voting_phase, has_ended, test } = game
+		const {
+			timer,
+			answers,
+			votes,
+			prompt,
+			round_number,
+			player_prompts,
+			is_voting_phase,
+			has_ended,
+			best_answer
+			// test
+		} = game
 
-		console.log(game)
+		// console.log(game)
 
 		if (has_ended) {
-			this.setState({ has_ended })
+			this.setState({ has_ended: has_ended, best_answer: best_answer })
 		}
 
-		if (this.state.currPlayer.is_host && round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
-			const newTimer = 8
+		if (round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
+			const newTimer = is_voting_phase ? 10 : 5
 			this.setState({
 				timer: newTimer,
 				is_voting_phase: is_voting_phase,
@@ -115,11 +111,12 @@ class Game extends Component {
 				votes: []
 			})
 
-			this.gameSub.send({
-				game_id: this.props.game.id,
-				timer: newTimer,
-				timeLimit: newTimer
-			})
+			this.state.currPlayer.is_host &&
+				this.gameSub.send({
+					game_id: this.props.game.id,
+					timer: newTimer,
+					timeLimit: newTimer
+				})
 		}
 
 		round_number && this.setState({ round_number: round_number })
@@ -127,7 +124,7 @@ class Game extends Component {
 		answers && this.setState({ answers })
 		votes && this.setState({ votes })
 		prompt && this.setState({ prompt })
-		test && this.setCountdown()
+		// test && this.setCountdown()
 		timer !== undefined && this.setState({ timer })
 	}
 
@@ -167,8 +164,8 @@ class Game extends Component {
 	}
 
 	startGame = () => {
-		const timeLimit = 15
-		const { is_voting_phase, round_number, timer } = this.state
+		const timeLimit = 90
+		const { is_voting_phase } = this.state
 
 		this.setState({ timer: timeLimit }, this.setCountdown)
 
@@ -181,9 +178,9 @@ class Game extends Component {
 	}
 
 	// passed down to post new anwers to the DB.
-	handleNewAnswer = (answer, num) => {
+	createNewAnswer = (answer, num) => {
 		const { currPlayer, player_prompts } = this.state
-		const { apiUrl, game } = this.props
+		const { apiUrl } = this.props
 
 		fetch(apiUrl + 'answers', {
 			method: 'POST',
@@ -209,13 +206,28 @@ class Game extends Component {
 		})
 	}
 
-	RESET = () => {
-		this.gameSub.send({ RESET: true })
+	handleToggleMute = () => {
+		const newVal = !this.state.isMuted
+		this.setState({ isMuted: newVal })
+
+		if (!newVal) {
+			this.music.play()
+		} else {
+			this.music.pause()
+		}
 	}
 
-	PAUSE = () => {
-		clearInterval(this.intervalId)
+	handleBackToMainMenu = () => {
+		this.setState(this.defaultState)
 	}
+
+	// RESET = () => {
+	// 	this.gameSub.send({ RESET: true })
+	// }
+
+	// PAUSE = () => {
+	// 	clearInterval(this.intervalId)
+	// }
 
 	render() {
 		const {
@@ -227,30 +239,44 @@ class Game extends Component {
 			has_ended,
 			answers,
 			votes,
-			prompt
+			prompt,
+			isMuted,
+			best_answer
 		} = this.state
 		const { game } = this.props
 
-		const hasGameEndedOnClientBeforeServer = !has_ended && round_number > Object.keys(player_prompts).length
+		const hasGameEndedOnClientBeforeServer = !has_ended && round_number > Object.keys(player_prompts).length * 2
 
 		// Conditionally render components based on the current state of the game.
 		let GameComponent
 
 		// Game ended but haven't recieved it from server yet so show loading
 		if (hasGameEndedOnClientBeforeServer) {
-			GameComponent = <div class='loader'>🧠</div>
+			GameComponent = (
+				<React.Fragment>
+					<div className='loader'>
+						🤔<br />
+					</div>
+					<p>Loading Scoreboard...</p>
+				</React.Fragment>
+			)
+			// Game has ended, show final screen
 		} else if (has_ended) {
-			GameComponent = <Endgame players={players} />
+			GameComponent = (
+				<Endgame players={players} best_answer={best_answer} handleBackToMainMenu={this.handleBackToMainMenu} />
+			)
+			// Game started, go to Answers Form
 		} else if (this.state.round_number === 0) {
 			if (Object.keys(player_prompts).length > 0) {
 				GameComponent = (
 					<AnswerForm
-						handleSubmit={this.handleNewAnswer}
+						handleSubmit={this.createNewAnswer}
 						currPlayer={currPlayer}
 						game={game}
 						player_prompts={player_prompts}
 					/>
 				)
+				// Show lobby before starting game / letting players join
 			} else {
 				GameComponent = (
 					<Lobby
@@ -273,18 +299,22 @@ class Game extends Component {
 					votes={votes}
 					prompt={prompt}
 					is_voting_phase={is_voting_phase}
+					isMuted={isMuted}
 				/>
 			)
 		}
 
 		return (
 			<div className='game'>
-				<h2>{this.state.timer > 0 && (!hasGameEndedOnClientBeforeServer && !has_ended) && this.state.timer}</h2>
+				<span onClick={this.handleToggleMute} className='mute'>
+					{isMuted ? '🔇' : '🔉'}
+				</span>
+				<h1>{this.state.timer > 0 && (!hasGameEndedOnClientBeforeServer && !has_ended) && this.state.timer}</h1>
 				<br />
 				{GameComponent}
-				<br />
+				{/* <br />
 				<button onClick={this.PAUSE}>PAUSE</button>
-				<button onClick={this.RESET}>/!\ RESET /!\</button>
+				<button onClick={this.RESET}>/!\ RESET /!\</button> */}
 			</div>
 		)
 	}

@@ -1,20 +1,35 @@
 import React, { Component } from 'react'
+import Answer from './Answer'
 
-const Endgame = (props) => {
+const Endgame = ({ players, best_answer, handleBackToMainMenu }) => {
 	return (
 		<div>
 			<h1>SCOREBOARD</h1>
 			<hr />
 			<table>
-				{props.players.sort((p1, p2) => p2.score - p1.score).map((player, i) => (
-					<tr>
-						<td>
-							{i === 0 ? '👑' : ' '} {player.name}
-						</td>
-						<td>{player.score}</td>
-					</tr>
-				))}
+				<tbody>
+					{players.sort((p1, p2) => p2.score - p1.score).map((player, i) => (
+						<tr key={i}>
+							<td>
+								{i === 0 ? '👑' : ' '} {player.name}
+							</td>
+							<td>{player.score}</td>
+						</tr>
+					))}
+				</tbody>
 			</table>
+			<br />
+			<br />
+			<br />
+			<h2>Best Answer</h2>
+			<Answer
+				answerer={players.find((player) => player.id === best_answer.player_id)}
+				answer={best_answer.text}
+				players={players}
+				votes={best_answer}
+			/>
+			<br />
+			<button onClick={handleBackToMainMenu}>Back to Main Menu</button>
 		</div>
 	)
 }

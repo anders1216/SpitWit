@@ -12,35 +12,32 @@ class GamesChannel < ApplicationCable::Channel
 
   def receive(data)
     # A way to re-seed database from client
-    if data["RESET"]
-      Round.delete_all
-      Answer.delete_all
-      Player.delete_all
-      Game.delete_all
+    # if data["RESET"]
+    #   Round.delete_all
+    #   Answer.delete_all
+    #   Player.delete_all
+    #   Game.delete_all
 
-      game = Game.create(id: 1, room_code: "TEST", round_number: 0)
-      Player.create(id: 1, game_id: 1, name: "PLAYER ONE 👑", is_host: true, score: 0)
-      Player.create(id: 2, game_id: 1, name: "PLAYER TWO", is_host: false, score: 0)
-      Player.create(id: 3, game_id: 1, name: "PLAYER THREE", is_host: false, score: 0)
+    #   game = Game.create(id: 1, room_code: "TEST", round_number: 0)
+    #   Player.create(id: 1, game_id: 1, name: "PLAYER ONE 👑", is_host: true, score: 0)
+    #   Player.create(id: 2, game_id: 1, name: "PLAYER TWO", is_host: false, score: 0)
+    #   Player.create(id: 3, game_id: 1, name: "PLAYER THREE", is_host: false, score: 0)
 
-      player_prompts = game.create_rounds
-      player_prompts.keys.each do |player|
-        if player != 1
-          Answer.create(
-            text: DummyAnswers.all.sample,
-            round_id: player_prompts[player][0][:round_id],
-            player_id: player
-          )
-          Answer.create(
-            text: DummyAnswers.all.sample,
-            round_id: player_prompts[player][1][:round_id],
-            player_id: player
-          ) 
-        end
-      end
-      ActionCable.server.broadcast('games', {player_prompts: player_prompts, timer: 15, test: true})
-      return
-    end
+    #   player_prompts = game.create_rounds
+    #   player_prompts.keys.each do |player|
+    #     if player != 1
+    #       player_prompts[player].each do |round| 
+    #         Answer.create(
+    #           text: DummyAnswers.all.sample,
+    #           round_id: round[:round_id],
+    #           player_id: player
+    #         )
+    #       end
+    #     end
+    #   end
+    #   ActionCable.server.broadcast('games', {player_prompts: player_prompts, timer: 5, test: true})
+    #   return
+    # end
 
     game = Game.find(data["game_id"])
 
@@ -62,7 +59,8 @@ class GamesChannel < ApplicationCable::Channel
       })
     elsif game.round_number > game.rounds.size
       ActionCable.server.broadcast('games', {
-        has_ended: true
+        has_ended: true,
+        best_answer: game.get_best_answer
       })
     elsif data["timer"] > 0
       # Decrement timer

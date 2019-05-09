@@ -5,37 +5,38 @@ import Prompt from '../Prompt'
 class AnswerForm extends Component {
 	state = {
 		answer1: false,
-		answer2: false
+		answer2: false,
+		answer3: false,
+		answer4: false
 	}
 
 	handleSubmit = (input, name) => {
 		this.setState({ [name]: true })
+		// Get index of answer from name
 		this.props.handleSubmit(input, parseInt(name.slice(-1)) - 1)
 	}
 
 	render() {
 		const { player_prompts, currPlayer } = this.props
-		const { answer1, answer2 } = this.state
 		let prompts = player_prompts[currPlayer.id]
 		if (!prompts) return null
 
 		return (
 			<div>
-				<Prompt prompt={prompts[0].prompt} isForm />
-				<Form
-					name={'answer1'}
-					disabled={answer1}
-					handleSubmit={this.handleSubmit}
-					placeholder={'enter answer here'}
-				/>
-				<br />
-				<Prompt prompt={prompts[1].prompt} isForm />
-				<Form
-					name={'answer2'}
-					disabled={answer2}
-					handleSubmit={this.handleSubmit}
-					placeholder={'enter answer here'}
-				/>
+				{prompts.map((prompt, i) => {
+					return (
+						<React.Fragment key={i}>
+							<Prompt prompt={prompt.prompt} isForm />
+							<Form
+								name={'answer' + (i + 1)}
+								disabled={this.state[`answer${i + 1}`]}
+								handleSubmit={this.handleSubmit}
+								placeholder={'enter answer'}
+							/>
+							<br />
+						</React.Fragment>
+					)
+				})}
 			</div>
 		)
 	}
