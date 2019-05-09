@@ -19,10 +19,36 @@ body {
     transform: rotate(360deg);
   }
 }
-
+button {
+  padding: 5px 10px;
+  display: inline-block;
+  margin: 5px 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  outline: none;
+  position: relative;
+  background: #cb4e4e;
+  color: #fff;
+  box-shadow: 0 6px #ab3c3c;
+  border-radius: 15px;
+}
 input {
-  background-color: white;
-  min-width: 300px;
+  align-self: center;
+  background: light-grey;
+  opacity: 0.25;
+  padding: 0.25rem 0.25rem;
+  margin: auto;
+  font-weight: 700;
+  transition: all 0.5s ease;
+  font-family: "Viga", sans-serif;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  outline: none;
+  border-color: black;
+  box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, 0.2);
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  min-width: 200px;
 }
 
 fieldset {
@@ -284,7 +310,6 @@ td {
   }
 }
 
-/* ================== INPUT ======================= */
 /* ================== LOADER ======================= */
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */
@@ -304,16 +329,6 @@ td {
   }
 }
 
-.input {
-  align-self: center;
-  background: transparent;
-  padding: 1rem 1rem;
-  margin: 0 1rem;
-  transition: all 0.5s ease;
-  color: #41403e;
-  font-size: 2rem;
-  letter-spacing: 1px;
-  outline: none;
-  box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, 0.2);
-  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+/* ================== BUTTON ======================= */
+button {
 }
