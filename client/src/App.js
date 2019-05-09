@@ -4,10 +4,10 @@ import Game from './containers/Game'
 import './App.css'
 
 class App extends Component {
-	API_URL = 'http://localhost:3000/' // 'https://damp-headland-59352.herokuapp.com/'
+	API_URL = 'https://spitwit-server.herokuapp.com/'
 
 	state = {
-		isHost: false,
+		is_host: false,
 		game: undefined
 	}
 
@@ -29,7 +29,7 @@ class App extends Component {
 			}
 		})
 			.then((res) => res.json())
-			.then((game) => this.setState({ game: game, isHost: true }))
+			.then((game) => this.setState({ game: game, is_host: true }))
 	}
 
 	// Randomize the emojis for more fun
@@ -46,14 +46,18 @@ class App extends Component {
 		)
 	}
 
+	resetGame = () => {
+		this.setState({ game: undefined, is_host: false })
+	}
+
 	render() {
-		const { game, isHost } = this.state
+		const { game, is_host } = this.state
 
 		return (
 			<div className='App'>
 				{this.renderSpitWits()}
 				{game ? (
-					<Game game={game} isHost={isHost} apiUrl={this.API_URL} />
+					<Game game={game} is_host={is_host} apiUrl={this.API_URL} resetGame={this.resetGame} />
 				) : (
 					<div>
 						<h1 className='heading'>SpitWit</h1>

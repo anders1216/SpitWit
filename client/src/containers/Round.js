@@ -26,7 +26,7 @@ class Round extends Component {
 				speechSynthesis.speak(msg)
 
 				let text = ''
-				text += answers[0] ? answers[0].text : ''
+				text += answers[0] ? answers[0].text : '<NO ANSWER>'
 				text += answers[1] ? '<OR>' + answers[1].text : '<OR> <NO ANSWER>'
 				msg.text = text
 				speechSynthesis.speak(msg)
@@ -54,14 +54,15 @@ class Round extends Component {
 
 	// Return true if current player has an answer this round
 	hasAnsweredThisRound = () => {
-		const { answers, currPlayer } = this.props
-		return answers.some((answer) => answer.player_id === currPlayer.id)
+		const { player_prompts, currPlayer, round_number } = this.props
+
+		return player_prompts[currPlayer.id].some((r) => r.round_number === round_number)
 	}
 
 	render() {
 		const { prompt, answers, is_voting_phase, players } = this.props
 		let answerSty = 'animated fadeIn'
-		if (!this.hasAnsweredThisRound()) answerSty += ' votable'
+		if (!this.hasAnsweredThisRound() && is_voting_phase) answerSty += ' votable'
 
 		return (
 			<div>

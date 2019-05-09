@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Answer from './Answer'
 
-const Endgame = ({ players, best_answer, handleBackToMainMenu }) => {
+const Endgame = ({ players, best_answer, handleBackToMainMenu, handlePlayAgain }) => {
 	return (
 		<div>
 			<h1>SCOREBOARD</h1>
@@ -21,14 +21,19 @@ const Endgame = ({ players, best_answer, handleBackToMainMenu }) => {
 			<br />
 			<br />
 			<br />
-			<h2>Best Answer</h2>
-			<Answer
-				answerer={players.find((player) => player.id === best_answer.player_id)}
-				answer={best_answer.text}
-				players={players}
-				votes={best_answer}
-			/>
+			{best_answer && (
+				<React.Fragment>
+					<h2>Best Answer</h2>
+					<Answer
+						answerer={players.find((player) => player.id === best_answer.player_id)}
+						answer={best_answer.text}
+						players={players}
+						votes={best_answer}
+					/>
+				</React.Fragment>
+			)}
 			<br />
+			{/*<button onClick={handlePlayAgain}>Play Again</button>*/}
 			<button onClick={handleBackToMainMenu}>Back to Main Menu</button>
 		</div>
 	)
