@@ -1,17 +1,17 @@
 # SpitWit
 
-       ***Welcome to SpitWit! A Quiplash™ clone!***
+       *Welcome to SpitWit! A Quiplash™ clone!*
 
 Have laugh with up to 8 players as you spit your wit in a head-to-head battle of
 quirky, comedic fun!
 
-          =================**INSTRUCTIONS**==================
+        **INSTRUCTIONS**
 
---Creating a game--
+          --Creating a game--
 
 Start the game by visiting <URL-HERE>. Once you reach the main menu click the "Create a new game" button to create a game. After creating a game create a username to display as you play. Once submitting your username you will join a game lobby that will display your game-code. Share your game-code with up to 8 of your friends to fill your lobby. Once at least 3 people are in a lobby you can start your game by pressing the start game button. After you start your game answer the prompts. After the timer counts to 0 the voting rounds begin. Vote for your favorite answer and enjoy all the laughs along the way! After all the rounds complete see who won and do it all again!
 
---Joining a Game--
+        --Joining a Game--
 
 Joining a game is as easy as entering the game-code into the input in the lobby. Game-codes are displayed in the lobby of each game and randomly generated when a game is created. Ask a host for their game code and enter it to join their lobby. After joining wait for the host to start the game. Once the game is started answer and submit your prompts. During the voting phase enjoy your friends wit and vote for your favorite answer. After the voting rounds end see who spit the most wit and decide if you want to go back to the main menu.
 
