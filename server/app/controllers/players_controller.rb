@@ -5,20 +5,13 @@ class PlayersController < ApplicationController
   end
 
   def create
+    game = Game.find(player_params[:game_id])
+    return if Game.players.size == 8 # Max number of players
+
     @player = Player.create(player_params)
+
     ActionCable.server.broadcast('players', Game.find(player_params[:game_id]).players)
     render json: @player
-  end
-
-  def update
-    @player = Player.find(params[:id])
-    @player.update(player_params)
-
-    if @player.save
-      render json: @player, status: :accepted
-    else
-      render json: { errors: @player.errors.full_messages }, status: :unprocessible_entity
-    end
   end
 
   private
