@@ -18,6 +18,7 @@ class Form extends Component {
         <form onSubmit={this.handleSubmit}>
           <fieldset disabled={this.props.disabled}>
             <input
+              className="input"
               name={this.props.name}
               type="text"
               onChange={this.handleChange}
