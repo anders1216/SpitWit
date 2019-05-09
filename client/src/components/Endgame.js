@@ -20,6 +20,7 @@ const Endgame = ({ players, best_answer }) => {
 			</table>
 			<br />
 			<br />
+			<br />
 			<h2>Best Answer</h2>
 			<Answer
 				answerer={players.find((player) => player.id === best_answer.player_id)}

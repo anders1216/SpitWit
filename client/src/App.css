@@ -57,12 +57,14 @@ fieldset {
 	border: none;
 }
 
+table {
+	margin: 0 auto;
+}
+
 td {
-	width: 200px;
-	max-width: 200px;
+	min-width: 100px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	padding: 0.1em;
 }
 
 /* =================== GAME ========================== */
