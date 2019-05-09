@@ -7,7 +7,7 @@ const Player = (props) => {
 		<div
 			className={`player ${colors[props.i]} ${props.isVote && 'vote animated tada'} ${props.isAnswerer &&
 				'answerer'}`}>
-			{props.name}
+			{props.name && props.name}
 		</div>
 	)
 }

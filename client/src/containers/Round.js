@@ -11,7 +11,7 @@ class Round extends Component {
 	}
 
 	handleVote = (answer) => {
-		if (this.state.votedFor) return
+		if (!this.props.is_voting_phase || this.state.votedFor) return
 
 		this.setState({ votedFor: answer })
 		this.props.handleVote(answer)
@@ -39,7 +39,7 @@ class Round extends Component {
 					return (
 						<div onClick={() => this.handleVote(answer)}>
 							<Answer
-								className={is_voting_phase ? `animated fadeIn delay-${i + 1}s` : ''}
+								className={is_voting_phase ? `votable animated fadeIn delay-${i + 1}s` : ''}
 								voted={is_voting_phase && this.state.votedFor && this.state.votedFor === answer}
 								answerer={answerer}
 								answer={answer.text}

@@ -9,7 +9,7 @@ const Endgame = (props) => {
 				{props.players.sort((p1, p2) => p2.score - p1.score).map((player, i) => (
 					<tr>
 						<td>
-							{i === 0 && '👑'} {player.name}
+							{i === 0 ? '👑' : ' '} {player.name}
 						</td>
 						<td>{player.score}</td>
 					</tr>

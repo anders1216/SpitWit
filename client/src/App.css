@@ -120,8 +120,11 @@ td {
 	margin: 3em;
 	padding: 0 1em 0 1em;
 	border: 2px solid black;
-	cursor: pointer;
 	background-color: black;
+}
+
+.answer.votable:hover {
+	cursor: pointer;
 }
 
 .player-votes {
