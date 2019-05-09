@@ -21,11 +21,15 @@ class Round extends Component {
 			if (voices.length !== 0) {
 				const msg = new SpeechSynthesisUtterance()
 				msg.voice = voices[7] // British voice for authenticity
-				let text = prompt.question + '...'
+				msg.text = prompt.question
+				speechSynthesis.speak(msg)
+
+				let text = ''
 				text += answers[0] ? answers[0].text : ''
-				text += answers[1] ? '<or>' + answers[1].text : '<or> <NO ANSWER>'
+				text += answers[1] ? '<OR>' + answers[1].text : '<OR> <NO ANSWER>'
 				msg.text = text
 				speechSynthesis.speak(msg)
+
 				clearInterval(timer)
 			}
 		}, 200)

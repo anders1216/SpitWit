@@ -90,10 +90,17 @@ class Game extends Component {
 		this.playerSub = cable.subscriptions.create('PlayersChannel', {
 			received: this.handleReceivePlayersUpdate
 		})
+
+		// Play theme music
+		this.music = new Audio('audio/sans_theme.mp3')
+		this.music.loop = true
+		this.music.volume = 0.3
+		this.music.play()
 	}
 
 	componentWillUnmount() {
 		console.log('disconnected from game.')
+		this.music.stop()
 		clearInterval(this.intervalId)
 	}
 
@@ -185,7 +192,6 @@ class Game extends Component {
 	createNewAnswer = (answer, num) => {
 		const { currPlayer, player_prompts } = this.state
 		const { apiUrl } = this.props
-		console.log(player_prompts[currPlayer.id], num)
 
 		fetch(apiUrl + 'answers', {
 			method: 'POST',
