@@ -17,9 +17,11 @@ quirky, comedic fun!
 
 **GAME FLOW**
 
-  After creating or joining a game each player is tasked with creating a username. After a username is submitted players enter a lobby that displays all the players in their lobby. Once 3 or more players have joined a lobby the host is given the option to start a game. After the game starts a
+  After creating or joining a game each player is tasked with creating a username. After a username is submitted players enter a lobby that displays all the players in their lobby. Once 3 or more players have joined a lobby the host is given the option to start a game. After the game starts each player is shown 4 prompts and given 90 seconds to write a witty answer for all of the prompts. After the initial answer phase the game moves into the voting phase. During each voting round one prompt is shown with the two different players answers to the prompt. Each round allots 10 seconds for players to vote for their favorite answer. After the voting phase of each round a results phase ensues displaying the votes for each players answer. The player's answer with the most votes wins the round and the player is allocated 100 points. After all of the rounds have commenced a final results round displays the results for the entire game and winner is highlighted.
 
 
-**GAME LOGIC**
+  **GAME LOGIC**
+
+
 
  -->
