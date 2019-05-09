@@ -72,7 +72,7 @@ class Game extends Component {
 		votes: {},
 		prompt: '',
 		has_ended: false,
-		bestAnswer: null,
+		best_answer: null,
 		isMuted: false
 	}
 
@@ -95,7 +95,7 @@ class Game extends Component {
 		// Play theme music
 		this.music = new Audio('audio/sans_theme.mp3')
 		this.music.loop = true
-		this.music.volume = 0.2
+		this.music.volume = 0.15
 		this.music.play()
 	}
 
@@ -106,12 +106,23 @@ class Game extends Component {
 	}
 
 	handleReceiveGameUpdate = (game) => {
-		const { timer, answers, votes, prompt, round_number, player_prompts, is_voting_phase, has_ended, test } = game
+		const {
+			timer,
+			answers,
+			votes,
+			prompt,
+			round_number,
+			player_prompts,
+			is_voting_phase,
+			has_ended,
+			best_answer,
+			test
+		} = game
 
 		// console.log(game)
 
 		if (has_ended) {
-			this.setState({ has_ended })
+			this.setState({ has_ended: has_ended, best_answer: best_answer })
 		}
 
 		if (this.state.currPlayer.is_host && round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
@@ -248,7 +259,8 @@ class Game extends Component {
 			answers,
 			votes,
 			prompt,
-			isMuted
+			isMuted,
+			best_answer
 		} = this.state
 		const { game } = this.props
 
@@ -268,7 +280,7 @@ class Game extends Component {
 				</React.Fragment>
 			)
 		} else if (has_ended) {
-			GameComponent = <Endgame players={players} />
+			GameComponent = <Endgame players={players} best_answer={best_answer} />
 		} else if (this.state.round_number === 0) {
 			if (Object.keys(player_prompts).length > 0) {
 				GameComponent = (
@@ -308,10 +320,10 @@ class Game extends Component {
 
 		return (
 			<div className='game'>
-				<a onClick={this.handleToggleMute} className='mute'>
+				<span onClick={this.handleToggleMute} className='mute'>
 					{isMuted ? '🔇' : '🔉'}
-				</a>
-				<h2>{this.state.timer > 0 && (!hasGameEndedOnClientBeforeServer && !has_ended) && this.state.timer}</h2>
+				</span>
+				<h1>{this.state.timer > 0 && (!hasGameEndedOnClientBeforeServer && !has_ended) && this.state.timer}</h1>
 				<br />
 				{GameComponent}
 				<br />

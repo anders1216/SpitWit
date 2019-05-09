@@ -78,6 +78,11 @@ td {
 	top: 0;
 	left: 0;
 	padding: 0.5rem;
+	text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
+.mute:hover {
+	cursor: pointer;
 }
 
 /* ================== PROMPT ========================= */

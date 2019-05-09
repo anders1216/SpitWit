@@ -29,6 +29,15 @@ class Game < ApplicationRecord
     return player_prompts
   end
 
+  def get_best_answer 
+    answers = []
+    self.rounds.each do |round|
+      answers << round.answers.max_by{|answer| answer.votes.size}
+    end
+
+    return answers.flatten.max_by{|answer| answer.votes.size}
+  end
+
   # Generate random 4-letter code
   def self.generate_room_code
     ('A'..'Z').to_a.sample(4).join

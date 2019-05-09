@@ -59,7 +59,8 @@ class GamesChannel < ApplicationCable::Channel
       })
     elsif game.round_number > game.rounds.size
       ActionCable.server.broadcast('games', {
-        has_ended: true
+        has_ended: true,
+        best_answer: game.get_best_answer
       })
     elsif data["timer"] > 0
       # Decrement timer
