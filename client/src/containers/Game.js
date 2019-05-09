@@ -308,8 +308,8 @@ class Game extends Component {
 
 		return (
 			<div className='game'>
-				<a style={isMuted ? { opacity: 1 } : { opacity: 0.5 }} onClick={this.handleToggleMute} className='mute'>
-					MUTE
+				<a onClick={this.handleToggleMute} className='mute'>
+					{isMuted ? '🔇' : '🔉'}
 				</a>
 				<h2>{this.state.timer > 0 && (!hasGameEndedOnClientBeforeServer && !has_ended) && this.state.timer}</h2>
 				<br />
