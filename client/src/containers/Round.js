@@ -21,7 +21,9 @@ class Round extends Component {
 			if (voices.length !== 0) {
 				const msg = new SpeechSynthesisUtterance()
 				msg.volume = 0.5
-				msg.voice = voices[7] // British voice for authenticity
+				let voice = voices.find((voice) => voice.lang.includes('en-GB')) || voices[7]
+				msg.voice = voice // British voice for authenticity
+				console.log(voices)
 				msg.text = prompt.question
 				speechSynthesis.speak(msg)
 
