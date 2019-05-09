@@ -70,6 +70,7 @@ td {
 	margin-top: 5%;
 	max-width: 100%;
 	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 /* ================== PROMPT ========================= */
@@ -122,7 +123,7 @@ td {
 }
 
 .yellow {
-	background-color: #d8b43e;
+	background-color: #ca9b00;
 }
 
 .green {
@@ -147,6 +148,7 @@ td {
 
 /* ===================== ANSWER ========================= */
 .answer {
+	position: relative;
 	margin: 3em;
 	padding: 0 1em 0 1em;
 	border: 2px solid black;
@@ -178,6 +180,20 @@ td {
 	margin: 0 auto;
 	top: -1em;
 	max-width: 200px;
+}
+
+.score {
+	position: absolute;
+	top: -4em;
+	margin: 0 auto;
+	font-size: 2em;
+	background-color: white;
+	color: black;
+	box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, 0.2);
+	border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+	border: solid 4px black;
+	padding: 0.1em;
+	z-index: 9 !important;
 }
 
 .voted {

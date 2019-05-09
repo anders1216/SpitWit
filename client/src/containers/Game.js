@@ -100,14 +100,14 @@ class Game extends Component {
 	handleReceiveGameUpdate = (game) => {
 		const { timer, answers, votes, prompt, round_number, player_prompts, is_voting_phase, has_ended, test } = game
 
-		console.log(game)
+		// console.log(game)
 
 		if (has_ended) {
 			this.setState({ has_ended })
 		}
 
 		if (this.state.currPlayer.is_host && round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
-			const newTimer = 8
+			const newTimer = is_voting_phase ? 8 : 3
 			this.setState({
 				timer: newTimer,
 				is_voting_phase: is_voting_phase,

@@ -33,10 +33,9 @@ class Round extends Component {
 	}
 
 	render() {
-		const { prompt, answers, votes, is_voting_phase, handleVote, players } = this.props
+		const { prompt, answers, is_voting_phase, players } = this.props
 		let answerSty = 'animated fadeIn'
 		if (!this.hasAnsweredThisRound()) answerSty += ' votable'
-
 		return (
 			<div>
 				<h1 className='animated flipInY'>{is_voting_phase ? 'VOTE!' : 'RESULTS'}</h1>
@@ -44,6 +43,7 @@ class Round extends Component {
 				<Prompt animated={is_voting_phase} prompt={prompt.question} />
 				{answers.map((answer, i) => {
 					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id)
+					const votes = this.getVotesForThisAnswer(answer)
 
 					return (
 						<div key={i} onClick={() => this.handleVote(answer)}>
@@ -53,8 +53,9 @@ class Round extends Component {
 								answerer={answerer}
 								answer={answer.text}
 								players={players}
-								votes={this.getVotesForThisAnswer(answer)}
+								votes={votes}
 								getPlayerById={this.getPlayerById}
+								is_voting_phase={is_voting_phase}
 							/>
 						</div>
 					)

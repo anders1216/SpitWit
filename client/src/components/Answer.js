@@ -19,6 +19,10 @@ const Answer = (props) => {
 							{...props.getPlayerById(vote.player_id)}
 						/>
 					))}
+				{!props.is_voting_phase &&
+				props.votes.length > 0 && (
+					<div className='score animated bounceIn delay-1s'>+{props.votes.length * 100}</div>
+				)}
 			</div>
 		</div>
 	)
