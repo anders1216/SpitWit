@@ -45,7 +45,7 @@ class App extends Component {
 
 		return (
 			<div className='area'>
-				<ul className='circles'>{emojis.map((emoji) => <li>{emoji}</li>)}</ul>
+				<ul className='circles'>{emojis.map((emoji, i) => <li key={i}>{emoji}</li>)}</ul>
 			</div>
 		)
 	}

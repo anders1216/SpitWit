@@ -66,6 +66,7 @@ td {
 /* =================== GAME ========================== */
 .game {
 	margin-top: 5%;
+	max-width: 100%;
 }
 
 /* ================== PROMPT ========================= */
@@ -73,7 +74,7 @@ td {
 .prompt {
 	color: black;
 	background: #fff;
-	padding: 30px;
+	padding: 10px;
 	position: relative;
 }
 

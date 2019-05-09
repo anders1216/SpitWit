@@ -26,16 +26,13 @@ class GamesChannel < ApplicationCable::Channel
       player_prompts = game.create_rounds
       player_prompts.keys.each do |player|
         if player != 1
-          Answer.create(
-            text: DummyAnswers.all.sample,
-            round_id: player_prompts[player][0][:round_id],
-            player_id: player
-          )
-          Answer.create(
-            text: DummyAnswers.all.sample,
-            round_id: player_prompts[player][1][:round_id],
-            player_id: player
-          ) 
+          player_prompts[player].each do |round| 
+            Answer.create(
+              text: DummyAnswers.all.sample,
+              round_id: round[:round_id],
+              player_id: player
+            )
+          end
         end
       end
       ActionCable.server.broadcast('games', {player_prompts: player_prompts, timer: 15, test: true})

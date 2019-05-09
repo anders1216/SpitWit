@@ -37,14 +37,14 @@ class Round extends Component {
 
 		return (
 			<div>
-				<h1>{is_voting_phase ? 'VOTE!' : 'RESULTS'}</h1>
+				<h1 className='animated flipInY'>{is_voting_phase ? 'VOTE!' : 'RESULTS'}</h1>
 				<br />
 				<Prompt animated={is_voting_phase} prompt={prompt.question} />
 				{answers.map((answer, i) => {
 					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id)
 
 					return (
-						<div onClick={() => this.handleVote(answer)}>
+						<div key={i} onClick={() => this.handleVote(answer)}>
 							<Answer
 								className={
 									is_voting_phase ? (

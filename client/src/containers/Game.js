@@ -71,7 +71,8 @@ class Game extends Component {
 		answers: {},
 		votes: {},
 		prompt: '',
-		has_ended: false
+		has_ended: false,
+		bestAnswer: null
 	}
 
 	// Start subscription after successfully joining game
@@ -181,9 +182,10 @@ class Game extends Component {
 	}
 
 	// passed down to post new anwers to the DB.
-	handleNewAnswer = (answer, num) => {
+	createNewAnswer = (answer, num) => {
 		const { currPlayer, player_prompts } = this.state
-		const { apiUrl, game } = this.props
+		const { apiUrl } = this.props
+		console.log(player_prompts[currPlayer.id], num)
 
 		fetch(apiUrl + 'answers', {
 			method: 'POST',
@@ -231,7 +233,7 @@ class Game extends Component {
 		} = this.state
 		const { game } = this.props
 
-		const hasGameEndedOnClientBeforeServer = !has_ended && round_number > Object.keys(player_prompts).length
+		const hasGameEndedOnClientBeforeServer = !has_ended && round_number > Object.keys(player_prompts).length * 2
 
 		// Conditionally render components based on the current state of the game.
 		let GameComponent
@@ -240,7 +242,7 @@ class Game extends Component {
 		if (hasGameEndedOnClientBeforeServer) {
 			GameComponent = (
 				<React.Fragment>
-					<div class='loader'>
+					<div className='loader'>
 						🤔<br />
 					</div>
 					<p>Loading Scoreboard...</p>
@@ -252,7 +254,7 @@ class Game extends Component {
 			if (Object.keys(player_prompts).length > 0) {
 				GameComponent = (
 					<AnswerForm
-						handleSubmit={this.handleNewAnswer}
+						handleSubmit={this.createNewAnswer}
 						currPlayer={currPlayer}
 						game={game}
 						player_prompts={player_prompts}
