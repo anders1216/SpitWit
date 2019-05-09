@@ -107,7 +107,7 @@ class Game extends Component {
 		}
 
 		if (this.state.currPlayer.is_host && round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
-			const newTimer = is_voting_phase ? 8 : 3
+			const newTimer = is_voting_phase ? 10 : 5
 			this.setState({
 				timer: newTimer,
 				is_voting_phase: is_voting_phase,

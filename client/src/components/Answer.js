@@ -21,7 +21,7 @@ const Answer = (props) => {
 					))}
 				{!props.is_voting_phase &&
 				props.votes.length > 0 && (
-					<div className='score animated bounceIn delay-1s'>+{props.votes.length * 100}</div>
+					<div className='score animated bounceIn delay-2s'>+{props.votes.length * 100}</div>
 				)}
 			</div>
 		</div>

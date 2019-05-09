@@ -10,6 +10,27 @@ class Round extends Component {
 		votedFor: null
 	}
 
+	componentDidMount() {
+		const { is_voting_phase, prompt, answers } = this.props
+		if (!is_voting_phase) return
+
+		// Fetching voices is async so we check until we get it
+		var timer = setInterval(() => {
+			var voices = speechSynthesis.getVoices()
+
+			if (voices.length !== 0) {
+				const msg = new SpeechSynthesisUtterance()
+				msg.voice = voices[7] // British voice for authenticity
+				let text = prompt.question + '...'
+				text += answers[0] ? answers[0].text : ''
+				text += answers[1] ? '<or>' + answers[1].text : '<or> <NO ANSWER>'
+				msg.text = text
+				speechSynthesis.speak(msg)
+				clearInterval(timer)
+			}
+		}, 200)
+	}
+
 	handleVote = (answer) => {
 		const { is_voting_phase, currPlayer, handleVote } = this.props
 		if (!is_voting_phase || this.state.votedFor || this.hasAnsweredThisRound()) return
@@ -36,30 +57,33 @@ class Round extends Component {
 		const { prompt, answers, is_voting_phase, players } = this.props
 		let answerSty = 'animated fadeIn'
 		if (!this.hasAnsweredThisRound()) answerSty += ' votable'
+
 		return (
 			<div>
 				<h1 className='animated flipInY'>{is_voting_phase ? 'VOTE!' : 'RESULTS'}</h1>
 				<br />
 				<Prompt animated={is_voting_phase} prompt={prompt.question} />
-				{answers.map((answer, i) => {
-					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id)
-					const votes = this.getVotesForThisAnswer(answer)
+				<div className='answers-container'>
+					{answers.map((answer, i) => {
+						const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id)
+						const votes = this.getVotesForThisAnswer(answer)
 
-					return (
-						<div key={i} onClick={() => this.handleVote(answer)}>
-							<Answer
-								className={answerSty + (is_voting_phase ? ` delay-${i + 1}s` : '')}
-								voted={is_voting_phase && this.state.votedFor && this.state.votedFor === answer}
-								answerer={answerer}
-								answer={answer.text}
-								players={players}
-								votes={votes}
-								getPlayerById={this.getPlayerById}
-								is_voting_phase={is_voting_phase}
-							/>
-						</div>
-					)
-				})}
+						return (
+							<div key={i} onClick={() => this.handleVote(answer)}>
+								<Answer
+									className={answerSty + (is_voting_phase ? ` delay-${i + 1}s` : '')}
+									voted={is_voting_phase && this.state.votedFor && this.state.votedFor === answer}
+									answerer={answerer}
+									answer={answer.text}
+									players={players}
+									votes={votes}
+									getPlayerById={this.getPlayerById}
+									is_voting_phase={is_voting_phase}
+								/>
+							</div>
+						)
+					})}
+				</div>
 			</div>
 		)
 	}
