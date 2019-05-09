@@ -40,6 +40,7 @@ class GamesChannel < ApplicationCable::Channel
     # end
 
     game = Game.find(data["game_id"])
+    return if (!game) 
 
     # There are two timers for the voting round and post-voting round
     # All timers will be updated/ticked-down by the host's client
@@ -64,8 +65,10 @@ class GamesChannel < ApplicationCable::Channel
         best_answer: game.get_best_answer
       })
 
-      # Delete everything for game
-      game.destroy_all
+      # Delete everything for game 
+      game.rounds.destroy_all
+      game.players.destroy_all 
+      game.destroy
     elsif data["timer"] > 0
       # Decrement timer
       ActionCable.server.broadcast('games', {

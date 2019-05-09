@@ -1,6 +1,6 @@
 class Game < ApplicationRecord
-  has_many :players
-  has_many :rounds
+  has_many :players, :dependent => :delete_all
+  has_many :rounds, :dependent => :delete_all
 
   # Create prompts and assign them to players for rounds
   def create_rounds
