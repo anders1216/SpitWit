@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Answer from './Answer'
 
-const Endgame = ({ players, best_answer }) => {
+const Endgame = ({ players, best_answer, handleBackToMainMenu }) => {
 	return (
 		<div>
 			<h1>SCOREBOARD</h1>
@@ -28,6 +28,8 @@ const Endgame = ({ players, best_answer }) => {
 				players={players}
 				votes={best_answer}
 			/>
+			<br />
+			<button onClick={handleBackToMainMenu}>Back to Main Menu</button>
 		</div>
 	)
 }

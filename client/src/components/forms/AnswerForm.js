@@ -24,8 +24,6 @@ class AnswerForm extends Component {
 		return (
 			<div>
 				{prompts.map((prompt, i) => {
-					console.log('answer' + (i + 1))
-
 					return (
 						<React.Fragment key={i}>
 							<Prompt prompt={prompt.prompt} isForm />

@@ -13,9 +13,10 @@ const Answer = (props) => {
 			<div className='player-votes' style={answerSty}>
 				{props.votes &&
 					props.votes.length > 0 &&
-					props.votes.map((vote) => (
+					props.votes.map((vote, i) => (
 						<Player
 							isVote
+							key={i}
 							i={props.players.indexOf(props.getPlayerById(vote.player_id))}
 							{...props.getPlayerById(vote.player_id)}
 						/>

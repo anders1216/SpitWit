@@ -47,6 +47,10 @@ button {
 	border-radius: 15px;
 }
 
+button:hover {
+	cursor: pointer;
+}
+
 input {
 	align-self: center;
 	background: white;

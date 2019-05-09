@@ -35,7 +35,7 @@ class Game < ApplicationRecord
       answers << round.answers.max_by{|answer| answer.votes.size}
     end
 
-    return answers.flatten.max_by{|answer| answer.votes.size}
+    return answers.flatten.max_by{|answer| answer ? answer.votes.size : 0}
   end
 
   # Generate random 4-letter code

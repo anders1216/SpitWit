@@ -36,7 +36,7 @@ export const GameContext = React.createContext()
 
 class Game extends Component {
 	intervalId
-	state = {
+	defaultState = {
 		currPlayer: undefined,
 		players: [],
 		player_prompts: {},
@@ -50,6 +50,7 @@ class Game extends Component {
 		best_answer: undefined,
 		isMuted: false
 	}
+	state = this.defaultState
 
 	// Start subscription after successfully joining game
 	componentDidMount() {
@@ -100,7 +101,7 @@ class Game extends Component {
 			this.setState({ has_ended: has_ended, best_answer: best_answer })
 		}
 
-		if (this.state.currPlayer.is_host && round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
+		if (round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
 			const newTimer = is_voting_phase ? 10 : 5
 			this.setState({
 				timer: newTimer,
@@ -110,11 +111,12 @@ class Game extends Component {
 				votes: []
 			})
 
-			this.gameSub.send({
-				game_id: this.props.game.id,
-				timer: newTimer,
-				timeLimit: newTimer
-			})
+			this.state.currPlayer.is_host &&
+				this.gameSub.send({
+					game_id: this.props.game.id,
+					timer: newTimer,
+					timeLimit: newTimer
+				})
 		}
 
 		round_number && this.setState({ round_number: round_number })
@@ -162,7 +164,7 @@ class Game extends Component {
 	}
 
 	startGame = () => {
-		const timeLimit = 120
+		const timeLimit = 90
 		const { is_voting_phase } = this.state
 
 		this.setState({ timer: timeLimit }, this.setCountdown)
@@ -215,6 +217,10 @@ class Game extends Component {
 		}
 	}
 
+	handleBackToMainMenu = () => {
+		this.setState(this.defaultState)
+	}
+
 	// RESET = () => {
 	// 	this.gameSub.send({ RESET: true })
 	// }
@@ -256,7 +262,9 @@ class Game extends Component {
 			)
 			// Game has ended, show final screen
 		} else if (has_ended) {
-			GameComponent = <Endgame players={players} best_answer={best_answer} />
+			GameComponent = (
+				<Endgame players={players} best_answer={best_answer} handleBackToMainMenu={this.handleBackToMainMenu} />
+			)
 			// Game started, go to Answers Form
 		} else if (this.state.round_number === 0) {
 			if (Object.keys(player_prompts).length > 0) {
