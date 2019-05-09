@@ -9,6 +9,8 @@ class Lobby extends Component {
 
 		return (
 			<div>
+				<h1>Room Code: {game.room_code}</h1>
+				{players.length === 8 && <h2>This game has reached max player capacity.</h2>}
 				{currPlayer ? (
 					<React.Fragment>
 						{players.map((player, i) => <Player key={i} i={players.indexOf(player)} {...player} />)}
