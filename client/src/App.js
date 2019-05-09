@@ -4,7 +4,7 @@ import Game from './containers/Game'
 import './App.css'
 
 class App extends Component {
-	API_URL = 'http://localhost:3000/'
+	API_URL = 'http://localhost:3000/' // 'https://damp-headland-59352.herokuapp.com/'
 
 	state = {
 		isHost: true,
@@ -36,21 +36,16 @@ class App extends Component {
 			.then((game) => this.setState({ game: game, isHost: true }))
 	}
 
+	// Randomize the emojis for more fun
 	renderSpitWits = () => {
+		let emojis = []
+		for (let i = 0; i < 10; i++) {
+			emojis.push([ '🧠', '🧠', '💦', '🤔', '🤔' ][Math.floor(Math.random() * 5)])
+		}
+
 		return (
 			<div className='area'>
-				<ul className='circles'>
-					<li>🧠</li>
-					<li>💦</li>
-					<li>🧠</li>
-					<li>🧠</li>
-					<li>🧠</li>
-					<li>💦</li>
-					<li>🧠</li>
-					<li>🧠</li>
-					<li>🧠</li>
-					<li>💦</li>
-				</ul>
+				<ul className='circles'>{emojis.map((emoji) => <li>{emoji}</li>)}</ul>
 			</div>
 		)
 	}

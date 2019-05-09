@@ -238,7 +238,14 @@ class Game extends Component {
 
 		// Game ended but haven't recieved it from server yet so show loading
 		if (hasGameEndedOnClientBeforeServer) {
-			GameComponent = <div class='loader'>🧠</div>
+			GameComponent = (
+				<React.Fragment>
+					<div class='loader'>
+						🤔<br />
+					</div>
+					<p>Loading Scoreboard...</p>
+				</React.Fragment>
+			)
 		} else if (has_ended) {
 			GameComponent = <Endgame players={players} />
 		} else if (this.state.round_number === 0) {
