@@ -4,12 +4,14 @@ import Answer from '../components/Answer'
 import Prompt from '../components/Prompt'
 
 class Round extends Component {
+	colors = [ 'red', 'yellow', 'orange', 'green', 'teal', 'blue', 'purple', 'pink' ]
+
 	state = {
 		votedFor: null
 	}
 
 	handleVote = (answer) => {
-		if (this.state.votedFor) return
+		if (!this.props.is_voting_phase || this.state.votedFor) return
 
 		this.setState({ votedFor: answer })
 		this.props.handleVote(answer)
@@ -28,17 +30,20 @@ class Round extends Component {
 
 		return (
 			<div>
-				{is_voting_phase ? 'VOTE' : 'RESULTS'}
-				<Prompt prompt={prompt.question} />
-				<hr />
-				{answers.map((answer) => {
-					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id).name
+				<h1>{is_voting_phase ? 'VOTE!' : 'RESULTS'}</h1>
+				<br />
+				<Prompt animated={is_voting_phase} prompt={prompt.question} />
+				{answers.map((answer, i) => {
+					const answerer = is_voting_phase ? null : this.getPlayerById(answer.player_id)
 
 					return (
 						<div onClick={() => this.handleVote(answer)}>
 							<Answer
+								className={is_voting_phase ? `votable animated fadeIn delay-${i + 1}s` : ''}
+								voted={is_voting_phase && this.state.votedFor && this.state.votedFor === answer}
 								answerer={answerer}
 								answer={answer.text}
+								players={players}
 								votes={this.getVotesForThisAnswer(answer)}
 								getPlayerById={this.getPlayerById}
 							/>

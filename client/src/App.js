@@ -36,11 +36,30 @@ class App extends Component {
 			.then((game) => this.setState({ game: game, isHost: true }))
 	}
 
+	renderSpitWits = () => {
+		return (
+			<div className='area'>
+				<ul className='circles'>
+					<li>🧠</li>
+					<li>💦</li>
+					<li>🧠</li>
+					<li>🧠</li>
+					<li>🧠</li>
+					<li>💦</li>
+					<li>🧠</li>
+					<li>🧠</li>
+					<li>🧠</li>
+					<li>💦</li>
+				</ul>
+			</div>
+		)
+	}
+
 	render() {
 		const { game, isHost } = this.state
 
 		return (
-			<div>
+			<div className='App'>
 				{game ? (
 					<Game game={game} isHost={isHost} apiUrl={this.API_URL} />
 				) : (
@@ -49,6 +68,7 @@ class App extends Component {
 						handleCreateNewGame={this.handleCreateNewGame}
 					/>
 				)}
+				{this.renderSpitWits()}
 			</div>
 		)
 	}

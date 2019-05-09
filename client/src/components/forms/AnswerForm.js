@@ -21,14 +21,15 @@ class AnswerForm extends Component {
 
 		return (
 			<div>
-				<Prompt prompt={prompts[0].prompt} />
+				<Prompt prompt={prompts[0].prompt} isForm />
 				<Form
 					name={'answer1'}
 					disabled={answer1}
 					handleSubmit={this.handleSubmit}
 					placeholder={'enter answer here'}
 				/>
-				<Prompt prompt={prompts[1].prompt} />
+				<br />
+				<Prompt prompt={prompts[1].prompt} isForm />
 				<Form
 					name={'answer2'}
 					disabled={answer2}
