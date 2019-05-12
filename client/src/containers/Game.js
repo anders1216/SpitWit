@@ -4,7 +4,6 @@ import ActionCable from 'actioncable'
 import Lobby from '../components/Lobby'
 import AnswerForm from '../components/forms/AnswerForm'
 import Round from './Round'
-import Player from '../components/Player'
 import Endgame from '../components/Endgame'
 
 // This is the main component that handles subscriptions.
@@ -54,31 +53,52 @@ class Game extends Component {
 
 	// Start subscription after successfully joining game
 	componentDidMount() {
-		const cableUrl = this.props.apiUrl.replace(/(https|http)/g, 'ws') + 'cable'
+		const { apiUrl, game, currPlayer } = this.props
+
+		const cableUrl = apiUrl.replace(/(http)/g, 'ws') + 'cable'
 		this.cable = ActionCable.createConsumer(cableUrl)
 
 		// Game subscription
-		this.gameSub = this.cable.subscriptions.create('GamesChannel', {
-			connected: () => console.log('connected to game.'),
-			received: this.handleReceiveGameUpdate
-		})
+		this.gameSub = this.cable.subscriptions.create(
+			{ channel: 'GamesChannel', game_id: game.id },
+			{
+				connected: () => console.log('connected to game.'),
+				received: this.handleReceiveGameUpdate
+			}
+		)
 
 		// Player subscription
-		this.playerSub = this.cable.subscriptions.create('PlayersChannel', {
-			received: this.handleReceivePlayersUpdate
-		})
+		this.playerSub = this.cable.subscriptions.create(
+			{ channel: 'PlayersChannel', game_id: game.id },
+			{
+				received: this.handleReceivePlayersUpdate
+			}
+		)
 
-		// Play theme music
-		this.music = new Audio('audio/sans_theme.mp3')
-		this.music.loop = true
-		this.music.volume = 0.4
-		this.music.play()
+		// Get players currently in lobby
+		this.getPlayersInLobby()
+
+		this.isMobile = /Mobi|Android/i.test(navigator.userAgent)
+
+		// Some mobile don't support HTML5 audio
+		if (!this.isMobile) {
+			// Play theme music
+			this.music = new Audio('audio/sans_theme.mp3')
+			this.music.loop = true
+			this.music.volume = 0.4
+			this.music.play()
+		}
 	}
 
 	componentWillUnmount() {
 		console.log('disconnected from game.')
-		this.music.pause()
+		this.cable.subscriptions.remove(this.gameSub)
+		this.cable.subscriptions.remove(this.playerSub)
+
+		!this.isMobile && this.music && this.music.pause()
 		clearInterval(this.intervalId)
+		this.setState(this.defaultState)
+		this.props.resetGame()
 	}
 
 	handleReceiveGameUpdate = (game) => {
@@ -106,7 +126,7 @@ class Game extends Component {
 		}
 
 		if (round_number > 0 && is_voting_phase !== this.state.is_voting_phase) {
-			const newTimer = is_voting_phase ? 10 : 5
+			const newTimer = is_voting_phase ? 12 : 5
 			this.setState({
 				timer: newTimer,
 				is_voting_phase: is_voting_phase,
@@ -130,6 +150,7 @@ class Game extends Component {
 		votes && this.setState({ votes })
 		prompt && this.setState({ prompt })
 		// test && this.setCountdown()
+
 		timer !== undefined && this.setState({ timer })
 	}
 
@@ -155,7 +176,16 @@ class Game extends Component {
 			.then((res) => res.json())
 			.then((player) => {
 				this.setState({ currPlayer: player })
+				is_host && this.playerSub.send({ game_id: game.id, host_id: player.id })
 			})
+	}
+
+	getPlayersInLobby = () => {
+		if (!this.props.game) return
+
+		fetch(this.props.apiUrl + `games/${this.props.game.id}/players`).then((res) => res.json()).then((players) => {
+			this.setState({ players })
+		})
 	}
 
 	setCountdown = () => {
@@ -182,7 +212,6 @@ class Game extends Component {
 		})
 	}
 
-	// passed down to post new anwers to the DB.
 	createNewAnswer = (answer, num) => {
 		const { currPlayer, player_prompts } = this.state
 		const { apiUrl } = this.props
@@ -215,10 +244,12 @@ class Game extends Component {
 		const newVal = !this.state.isMuted
 		this.setState({ isMuted: newVal })
 
-		if (!newVal) {
-			this.music.play()
-		} else {
-			this.music.pause()
+		if (!this.isMobile) {
+			if (!newVal) {
+				this.music.play()
+			} else {
+				this.music.pause()
+			}
 		}
 	}
 
@@ -255,7 +286,8 @@ class Game extends Component {
 			votes,
 			prompt,
 			isMuted,
-			best_answer
+			best_answer,
+			timer
 		} = this.state
 		const { game } = this.props
 
@@ -285,8 +317,10 @@ class Game extends Component {
 				/>
 			)
 			// Game started, go to Answers Form
-		} else if (this.state.round_number === 0) {
-			if (Object.keys(player_prompts).length > 0) {
+		} else if (round_number === 0) {
+			// Prematurely unmount so that we can give the server time
+			// to create the answers on unmount
+			if (timer > 1 && Object.keys(player_prompts).length > 0) {
 				GameComponent = (
 					<AnswerForm
 						handleSubmit={this.createNewAnswer}
@@ -295,12 +329,24 @@ class Game extends Component {
 						player_prompts={player_prompts}
 					/>
 				)
+				// Show loading during delay to create answers
+			} else if (timer > 0 && Object.keys(player_prompts).length > 0) {
+				GameComponent = (
+					<React.Fragment>
+						<div className='loader'>
+							🤔<br />
+						</div>
+						<p>Loading Rounds...</p>
+					</React.Fragment>
+				)
+
 				// Show lobby before starting game / letting players join
 			} else {
 				GameComponent = (
 					<Lobby
 						handleStartGame={this.startGame}
 						handleSubmit={this.createNewPlayer}
+						handleBackToMainMenu={this.handleBackToMainMenu}
 						players={players}
 						currPlayer={currPlayer}
 						game={game}
@@ -319,16 +365,18 @@ class Game extends Component {
 					prompt={prompt}
 					player_prompts={player_prompts}
 					is_voting_phase={is_voting_phase}
-					isMuted={isMuted}
+					isMuted={isMuted || this.isMobile}
 				/>
 			)
 		}
 
 		return (
 			<div className='game'>
-				<span onClick={this.handleToggleMute} className='mute'>
-					{isMuted ? '🔇' : '🔉'}
-				</span>
+				{!this.isMobile && (
+					<span onClick={this.handleToggleMute} className='mute'>
+						{isMuted ? '🔇' : '🔉'}
+					</span>
+				)}
 				<h1>{this.state.timer > 0 && (!hasGameEndedOnClientBeforeServer && !has_ended) && this.state.timer}</h1>
 				<br />
 				{GameComponent}

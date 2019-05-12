@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Form from './Form'
 
 const NewGameForm = (props) => {
-	const { handleEnterGame, handleCreateNewGame } = props
+	const { handleEnterGame, handleCreateNewGame, handleQuickJoin } = props
 
 	return (
 		<div>
@@ -10,6 +10,8 @@ const NewGameForm = (props) => {
 				<React.Fragment>
 					<br />
 					<h3>OR</h3>
+					<br />
+					<button onClick={handleQuickJoin}>Quick Join</button>
 					<br />
 					<button onClick={handleCreateNewGame}>Create New Game</button>
 				</React.Fragment>

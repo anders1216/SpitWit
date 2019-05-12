@@ -9,19 +9,18 @@ class GamesController < ApplicationController
       room_code: Game.generate_room_code, 
       round_number: 0
     }
-
+ 
     @game = Game.create!(init)
     render json: @game
   end
 
-  def update
-    @game = Game.find(params[:id])
-    @game.update(game_params)
+  def quick_join
+    @game = Game.quick_join
+    render json: @game
+  end
 
-    if @game.save
-      render json: @game, status: :accepted
-    else
-      render json: { errors: @game.errors.full_messages }, status: :unprocessible_entity
-    end
+  def players
+    @game = Game.find(params[:id])
+    render json: @game.players
   end
 end

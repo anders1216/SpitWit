@@ -10,7 +10,7 @@ class PlayersController < ApplicationController
 
     @player = Player.create(player_params)
 
-    ActionCable.server.broadcast('players', Game.find(player_params[:game_id]).players)
+    ActionCable.server.broadcast("game-#{player_params[:game_id]}:players", Game.find(player_params[:game_id]).players)
     render json: @player
   end
 

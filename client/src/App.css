@@ -3,6 +3,8 @@ body {
 	color: white;
 	background-color: #380d05;
 	background-image: linear-gradient(90deg, #380d05 0%, #5f170c 25%, #6b1c0f 50%, #61160a 75%, #360a04 100%);
+	width: 100vw;
+	height: 100vh;
 }
 
 .App {
@@ -40,7 +42,7 @@ button {
 	font-weight: 700;
 	outline: none;
 	position: relative;
-	background: #cb4e4e;
+	background-color: #cb4e4e !important;
 	color: #fff;
 	box-shadow: 0 4px #ab3c3c;
 	border-radius: 5px;
@@ -52,7 +54,7 @@ button:hover {
 
 input {
 	align-self: center;
-	background: white;
+	background: rgb(255, 255, 255) !important;
 	padding: 0.25rem 0.25rem;
 	margin: auto;
 	font-weight: 700;
@@ -124,7 +126,8 @@ td {
 	text-align: center;
 	background: transparent;
 	padding: 0.5rem 0.5em;
-	margin: 0.5rem 0.5rem;
+	margin: 0 auto;
+	margin-bottom: 0.5em;
 	letter-spacing: 1px;
 	outline: none;
 	box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, 0.2);

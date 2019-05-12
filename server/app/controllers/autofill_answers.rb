@@ -1,4 +1,4 @@
-module DummyAnswers
+module AutofillAnswers
 @all = [
   "Coat hanger abortions.",
   "Man meat.",
@@ -8,7 +8,7 @@ module DummyAnswers
   "Pictures of boobs.",
   "Doing the right thing.",
   "The violation of our most basic human rights.",
-  "Viagra&reg;.",
+  "Viagra.",
   "Self-loathing.",
   "Spectacular abs.",
   "A balanced breakfast.",
@@ -117,7 +117,7 @@ module DummyAnswers
   "Gandhi.",
   "Preteens.",
   "Toni Morrison's vagina.",
-  "Five-Dollar Footlongs&trade;.",
+  "Five-Dollar Footlongs.",
   "Land mines.",
   "A sea of troubles.",
   "A zesty breakfast burrito.",
@@ -135,7 +135,7 @@ module DummyAnswers
   "Pixelated bukkake.",
   "Friends with benefits.",
   "The token minority.",
-  "The Tempur-Pedic&reg; Swedish Sleep System&trade;.",
+  "The Tempur-Pedic Swedish Sleep System.",
   "A thermonuclear detonation.",
   "Take-backsies.",
   "The Rapture.",
@@ -160,7 +160,7 @@ module DummyAnswers
   "Britney Spears at 55.",
   "All-you-can-eat shrimp for $4.99.",
   "Pooping back and forth. Forever.",
-  "Fancy Feast&reg;.",
+  "Fancy Feast.",
   "Jewish fraternities.",
   "Being a motherfucking sorcerer.",
   "Pulling out.",
@@ -188,7 +188,7 @@ module DummyAnswers
   "Darth Vader.",
   "Eating the last known bison.",
   "Guys who don't call.",
-  "Hot Pockets&reg;.",
+  "Hot Pockets.",
   "A time travel paradox.",
   "The milk man.",
   "Testicular torsion.",
@@ -224,7 +224,7 @@ module DummyAnswers
   "Pedophiles.",
   "72 virgins.",
   "Pabst Blue Ribbon.",
-  "Domino's&trade; Oreo&trade; Dessert Pizza.",
+  "Domino's Oreo Dessert Pizza.",
   "A snapping turtle biting the tip of your penis.",
   "The Blood of Christ.",
   "Half-assed foreplay.",
@@ -234,7 +234,7 @@ module DummyAnswers
   "Bill Nye the Science Guy.",
   "Italians.",
   "A windmill full of corpses.",
-  "Adderall&trade;.",
+  "Adderall.",
   "Crippling debt.",
   "A stray pube.",
   "Prancing.",
@@ -291,7 +291,7 @@ module DummyAnswers
   "The gays.",
   "Scientology.",
   "Estrogen.",
-  "GoGurt&reg;.",
+  "GoGurt.",
   "Judge Judy.",
   "Dick fingers.",
   "Racism.",
@@ -312,7 +312,7 @@ module DummyAnswers
   "Third base.",
   "Racially-biased SAT questions.",
   "Porn stars.",
-  "A Super Soaker&trade; full of cat pee.",
+  "A Super Soaker full of cat pee.",
   "Muhammed (Praise Be Unto Him).",
   "Puberty.",
   "A disappointing birthday party.",
@@ -329,7 +329,7 @@ module DummyAnswers
   "A robust mongoloid.",
   "An M. Night Shyamalan plot twist.",
   "Getting drunk on mouthwash.",
-  "Lunchables&trade;.",
+  "Lunchables.",
   "Women in yogurt commercials.",
   "John Wilkes Booth.",
   "Powerful thighs.",
@@ -356,7 +356,7 @@ module DummyAnswers
   "The miracle of childbirth.",
   "Finger painting.",
   "A monkey smoking a cigar.",
-  "The Make-A-Wish&reg; Foundation.",
+  "The Make-A-Wish Foundation.",
   "Anal beads.",
   "The Force.",
   "Kamikaze pilots.",
@@ -372,7 +372,7 @@ module DummyAnswers
   "A mopey zoo lion.",
   "A defective condom.",
   "Teenage pregnancy.",
-  "A Bop It&trade;.",
+  "A Bop It.",
   "Expecting a burp and vomiting on the floor.",
   "Horrifying laser hair removal accidents.",
   "Boogers.",
@@ -403,10 +403,10 @@ module DummyAnswers
   "Embryonic stem cells.",
   "Nicolas Cage.",
   "Firing a rifle into the air while balls deep in a squealing hog.",
-  "Switching to Geico&reg;.",
+  "Switching to Geico.",
   "The chronic.",
   "Erectile dysfunction.",
-  "Home video of Oprah sobbing into a Lean Cuisine&reg;.",
+  "Home video of Oprah sobbing into a Lean Cuisine.",
   "A bucket of fish heads.",
   "50,000 volts straight to the nipples.",
   "Being fat and stupid.",
@@ -464,5 +464,9 @@ module DummyAnswers
 
   def self.all 
     @all
+  end
+
+  def self.random 
+    @all.sample
   end
 end

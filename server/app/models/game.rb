@@ -39,6 +39,21 @@ class Game < ApplicationRecord
     return answers.flatten.max_by{|answer| answer ? answer.votes.size : 0}
   end
 
+  def self.quick_join
+    games = Game.all.to_a
+    game = nil
+
+    while (!game && games.last)
+      if (games.last.round_number === 0 && games.last.rounds.size === 0)
+        game = games.last 
+      end
+
+      games.pop()
+    end
+
+    return game
+  end
+
   # Generate random 4-letter code
   def self.generate_room_code
     ('A'..'Z').to_a.sample(4).join

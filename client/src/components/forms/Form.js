@@ -3,6 +3,15 @@ import React, { Component } from 'react'
 class Form extends Component {
 	state = { input: '' }
 
+	// Auto-submit on timer end
+	componentWillUnmount() {
+		const { submitOnTimerEnd, handleSubmit } = this.props
+
+		if (submitOnTimerEnd) {
+			handleSubmit(this.state.input, this.props.name)
+		}
+	}
+
 	handleChange = (e) => {
 		this.setState({ input: e.target.value })
 	}
@@ -13,7 +22,7 @@ class Form extends Component {
 	}
 
 	render() {
-		const { disabled, name, buttonName, children, placeholder } = this.props
+		const { disabled, name, buttonName, children, placeholder, submitOnTimerEnd } = this.props
 
 		return (
 			<div>
@@ -28,9 +37,11 @@ class Form extends Component {
 							value={this.state.value}
 							placeholder={placeholder}
 						/>
-						<button style={disabled ? { opacity: 0.5 } : {}} type='submit'>
-							{buttonName ? buttonName : 'submit'}
-						</button>
+						{!submitOnTimerEnd && (
+							<button style={disabled ? { opacity: 0.5 } : {}} type='submit'>
+								{buttonName ? buttonName : 'submit'}
+							</button>
+						)}
 					</fieldset>
 				</form>
 				{children}

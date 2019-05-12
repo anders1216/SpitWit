@@ -23,14 +23,12 @@ class Round extends Component {
 				msg.volume = 0.5
 				let voice = voices.find((voice) => voice.lang.includes('en-GB')) || voices[7]
 				msg.voice = voice // British voice for authenticity
-				console.log(voices)
-				msg.text = prompt.question
-				speechSynthesis.speak(msg)
 
-				let text = ''
-				text += answers[0] ? answers[0].text : '<NO ANSWER>'
-				text += answers[1] ? '<OR>' + answers[1].text : '<OR> <NO ANSWER>'
+				let text = prompt.question + '...'
+				text += answers[0] ? answers[0].text.replace('[AUTOFILL] ', '') : '<NO ANSWER>'
+				text += answers[1] ? '<OR>' + answers[1].text.replace('[AUTOFILL] ', '') : '<OR> <NO ANSWER>'
 				msg.text = text
+
 				speechSynthesis.speak(msg)
 
 				clearInterval(timer)

@@ -1,3 +1,5 @@
+require_relative './autofill_answers.rb'
+
 class AnswersController < ApplicationController
   def index
     @answers = Answer.all
@@ -5,11 +7,22 @@ class AnswersController < ApplicationController
   end
 
   def create
-    if (answer_params[:text] != '')
-      @answer = Answer.create(
-        text: answer_params[:text],
-        player_id: answer_params[:player_id],
-        round_id: answer_params[:round_id]
+    answer = answer_params[:text]
+    answer.slice! "[AUTOFILL]" # In case people are cheeky and include this manually
+
+    # Autofill answer if left blank
+    if (answer == "")
+      answer = "[AUTOFILL] " + AutofillAnswers.random
+    end
+
+    player_id = answer_params[:player_id]
+    round_id = answer_params[:round_id]
+    # Avoid duplicates
+    if (!Answer.find_by(player_id: player_id,round_id: round_id))
+      @answer = Answer.find_or_create_by(
+        text: answer,
+        player_id: player_id,
+        round_id: round_id
       )
     end
 

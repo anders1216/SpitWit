@@ -4,15 +4,13 @@ import Prompt from '../Prompt'
 
 class AnswerForm extends Component {
 	state = {
-		answer1: false,
-		answer2: false,
-		answer3: false,
-		answer4: false
+		answer1: undefined,
+		answer2: undefined,
+		answer3: undefined,
+		answer4: undefined
 	}
 
 	handleSubmit = (input, name) => {
-		this.setState({ [name]: true })
-		// Get index of answer from name
 		this.props.handleSubmit(input, parseInt(name.slice(-1)) - 1)
 	}
 
@@ -23,6 +21,8 @@ class AnswerForm extends Component {
 
 		return (
 			<div>
+				<h1>Answer the prompts!</h1>
+				<br />
 				{prompts.map((prompt, i) => {
 					return (
 						<React.Fragment key={i}>
@@ -32,11 +32,14 @@ class AnswerForm extends Component {
 								disabled={this.state[`answer${i + 1}`]}
 								handleSubmit={this.handleSubmit}
 								placeholder={'enter answer'}
+								submitOnTimerEnd
 							/>
 							<br />
 						</React.Fragment>
 					)
 				})}
+				<br />
+				<small>Any answers left blank will be auto-filled by the server.</small>
 			</div>
 		)
 	}

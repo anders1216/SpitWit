@@ -6,8 +6,15 @@ class VotesController < ApplicationController
 
   def create
     @vote = Vote.create(vote_params)
-    player = Player.find(Answer.find(vote_params[:answer_id]).player_id)
-    player.update(score: player.score + 100)
+    answer = Answer.find(vote_params[:answer_id])
+    player = Player.find(answer.player_id)
+
+    score = 100
+    
+    # Auto-fill answers only get half points
+    score -= 50 if answer.text.start_with?("[AUTOFILL]")
+
+    player.update(score: player.score + score)
     render json: @vote
   end
   

@@ -8,20 +8,38 @@ class App extends Component {
 
 	state = {
 		is_host: false,
-		game: undefined
+		game: undefined,
+		isLoading: false,
+		message: ''
 	}
 
 	handleEnterGame = (roomCode) => {
+		this.setState({ isLoading: true })
 		fetch(this.API_URL + 'games').then((res) => res.json()).then((games) => {
 			const game = games.find((game) => game.room_code === roomCode.toUpperCase())
 
-			if (game) {
-				this.setState({ game: game })
+			if (game && game.round_number === 0) {
+				this.setState({ game: game, isLoading: false })
+			} else {
+				this.setState({ message: 'Game does not exist', isLoading: false })
+			}
+		})
+	}
+
+	// Quick join a game that has not started yet
+	handleQuickJoin = () => {
+		this.setState({ isLoading: true })
+		fetch(this.API_URL + 'games/quick_join').then((res) => res.json()).then((game) => {
+			if (game && game.round_number === 0) {
+				this.setState({ game: game, isLoading: false })
+			} else {
+				this.setState({ message: 'No active game found.', isLoading: false })
 			}
 		})
 	}
 
 	handleCreateNewGame = () => {
+		this.setState({ isLoading: true })
 		fetch(this.API_URL + 'games', {
 			method: 'POST',
 			headers: {
@@ -29,7 +47,7 @@ class App extends Component {
 			}
 		})
 			.then((res) => res.json())
-			.then((game) => this.setState({ game: game, is_host: true }))
+			.then((game) => this.setState({ game: game, is_host: true, isLoading: false }))
 	}
 
 	// Randomize the emojis for more fun
@@ -51,7 +69,7 @@ class App extends Component {
 	}
 
 	render() {
-		const { game, is_host } = this.state
+		const { game, is_host, isLoading, message } = this.state
 
 		return (
 			<div className='App'>
@@ -64,7 +82,13 @@ class App extends Component {
 						<NewGameForm
 							handleEnterGame={this.handleEnterGame}
 							handleCreateNewGame={this.handleCreateNewGame}
+							handleQuickJoin={this.handleQuickJoin}
 						/>
+						<br />
+						<div>
+							{isLoading && <small>Loading...</small>}
+							{message && <small>Loading...</small>}
+						</div>
 					</div>
 				)}
 			</div>

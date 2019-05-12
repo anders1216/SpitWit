@@ -1,8 +1,8 @@
-require_relative './dummy_answers.rb'
-
 class GamesChannel < ApplicationCable::Channel
+  @player_prompts = {}
+
   def subscribed
-    stream_from 'games'
+    stream_from "games:#{params["game_id"]}"
   end
 
   # Destroy game and disconnect everyone if host disconnects
@@ -11,34 +11,6 @@ class GamesChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    # A way to re-seed database from client
-    # if data["RESET"]
-    #   Round.delete_all
-    #   Answer.delete_all
-    #   Player.delete_all
-    #   Game.delete_all
-
-    #   game = Game.create(id: 1, room_code: "TEST", round_number: 0)
-    #   Player.create(id: 1, game_id: 1, name: "PLAYER ONE 👑", is_host: true, score: 0)
-    #   Player.create(id: 2, game_id: 1, name: "PLAYER TWO", is_host: false, score: 0)
-    #   Player.create(id: 3, game_id: 1, name: "PLAYER THREE", is_host: false, score: 0)
-
-    #   player_prompts = game.create_rounds
-    #   player_prompts.keys.each do |player|
-    #     if player != 1
-    #       player_prompts[player].each do |round| 
-    #         Answer.create(
-    #           text: DummyAnswers.all.sample,
-    #           round_id: round[:round_id],
-    #           player_id: player
-    #         )
-    #       end
-    #     end
-    #   end
-    #   ActionCable.server.broadcast('games', {player_prompts: player_prompts, timer: 5, test: true})
-    #   return
-    # end
-
     game = Game.find(data["game_id"])
     return if (!game) 
 
@@ -48,30 +20,24 @@ class GamesChannel < ApplicationCable::Channel
     # Voting round will be 90 seconds
     # Post-voting round will display vote results for 3 seconds
     if game.round_number == 0 && data["timer"] == data["timeLimit"]
-      player_prompts = game.create_rounds
-      ActionCable.server.broadcast('games', {player_prompts: player_prompts})
+      @player_prompts = game.create_rounds
+      ActionCable.server.broadcast("games:#{data["game_id"]}", {player_prompts: @player_prompts})
     elsif game.round_number > 0 && data["timer"] == data["timeLimit"]
       round = Round.find_by(game_id: game.id, round_number: game.round_number)
 
-      # Pass round data to be access in round render
-      ActionCable.server.broadcast('games', {
+      ActionCable.server.broadcast("games:#{data["game_id"]}", {
         prompt: round.prompt,
-        answers: round.answers,
+        answers: round.answers
       })
-      # END GAME
+    # END GAME
     elsif game.round_number > game.rounds.size
-      ActionCable.server.broadcast('games', {
+      ActionCable.server.broadcast("games:#{data["game_id"]}", {
         has_ended: true,
         best_answer: game.get_best_answer
       })
-
-      # Delete everything for game 
-      game.rounds.destroy_all
-      game.players.destroy_all 
-      game.destroy
     elsif data["timer"] > 0
       # Decrement timer
-      ActionCable.server.broadcast('games', {
+      ActionCable.server.broadcast("games:#{data["game_id"]}", {
         timer: data["timer"]
       })
     elsif data["timer"] == 0
@@ -81,7 +47,7 @@ class GamesChannel < ApplicationCable::Channel
         new_round = game.round_number + 1
         game.update!(round_number: new_round)
 
-        ActionCable.server.broadcast('games', {
+        ActionCable.server.broadcast("games:#{data["game_id"]}", {
           round_number: new_round,
           is_voting_phase: !data["is_voting_phase"]
         })
@@ -90,12 +56,12 @@ class GamesChannel < ApplicationCable::Channel
         votes = round.answers.map {|answer| answer.votes}
         # Toggle is_voting_phase on new round
 
-        ActionCable.server.broadcast('games', {
+        ActionCable.server.broadcast("game-#{data['game_id']}:players", game.players)        
+        ActionCable.server.broadcast("games:#{data["game_id"]}", {
           round_number: game.round_number,
           is_voting_phase: !data["is_voting_phase"],
           votes: votes.flatten
         })
-        ActionCable.server.broadcast('players', game.players)
       end
     end
   end
